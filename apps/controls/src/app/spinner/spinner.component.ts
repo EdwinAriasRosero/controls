@@ -22,9 +22,9 @@ export class SpinnerComponentWrap {
             this.spinnerService.show("Loading data...");
         })
 
-        // timer(3000).subscribe(_ => {
-        //     this.spinnerService.hide();
-        // });
+        timer(3000).subscribe(_ => {
+            this.spinnerService.hide();
+        });
 
     }
 }
