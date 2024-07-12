@@ -49,8 +49,8 @@ constructor(private spinnerService: SpinnerService) {
 
 ## Result
 
-![Spinner](https://github.com/EdwinAriasRosero/controls/blob/main/libs/spinner/assets/spinner.png?raw=true)
+![Spinner](https://github.com/EdwinAriasRosero/controls/blob/main/libs/spinner/assets/spinner.PNG?raw=true)
 
 ## Custom content
 
-![Custom spinner](https://github.com/EdwinAriasRosero/controls/blob/main/libs/spinner/assets/spinner-custom.png?raw=true)
+![Custom spinner](https://github.com/EdwinAriasRosero/controls/blob/main/libs/spinner/assets/spinner-custom.PNG?raw=true)
