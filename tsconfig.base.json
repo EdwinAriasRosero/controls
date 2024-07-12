@@ -15,7 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@controls/layout": ["libs/layout/src/index.ts"]
+      "@ea-layout": ["libs/ea-layout/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,0 +1,14 @@
+{
+  "name": "@control-ea/layout",
+  "version": "0.0.4",
+  "peerDependencies": {
+    "@angular/common": "^18.0.0",
+    "@angular/core": "^18.0.0"
+  },
+  "keywords": [
+    "angular",
+    "layout",
+    "responsive"
+  ],
+  "sideEffects": false
+}

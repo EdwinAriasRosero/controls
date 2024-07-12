@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NxWelcomeComponent } from './nx-welcome.component';
-import { LayoutComponent } from '@controls/layout';
+import { LayoutComponent } from '@ea-layout';
 
 @Component({
   standalone: true,

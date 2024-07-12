@@ -4,7 +4,7 @@ Layout with usual position designed with flex, it allows user to choose between 
 
 # Installation
 Install with npm
-> npm i @ea/layout
+> npm i @control-ea/layout
 
 # Use
 
