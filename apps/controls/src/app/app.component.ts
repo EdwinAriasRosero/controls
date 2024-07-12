@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NxWelcomeComponent } from './nx-welcome.component';
-import { LayoutComponent } from '@ea-layout';
 
 @Component({
   standalone: true,
-  imports: [NxWelcomeComponent, RouterModule, LayoutComponent],
+  imports: [RouterModule],
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
