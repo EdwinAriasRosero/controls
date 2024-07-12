@@ -1,9 +1,9 @@
 /* eslint-disable */
 export default {
-  displayName: 'ea-layout',
+  displayName: 'layout',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../../coverage/libs/ea-layout',
+  coverageDirectory: '../../coverage/libs/layout',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

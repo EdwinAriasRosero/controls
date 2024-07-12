@@ -8,7 +8,7 @@ Install with npm
 
 # Use
 
-Try to apply classes to parent tags (Usually html, body and app-root)
+Try to apply classes to parent tags (Usually html, body and app-root), this should be in styles.scss
 
 ```css
 html,
@@ -22,6 +22,12 @@ app-root {
 }
 ```
 
+
+Add component in modules
+```ts
+import { LayoutComponent } from '@control-ea/layout';
+```
+
 Use &lt;ea-layout&gt; tag for starting, after you can use optional attributes in your sections
 
 1. ea-header
@@ -29,7 +35,7 @@ Use &lt;ea-layout&gt; tag for starting, after you can use optional attributes in
 1. ea-left-sidebar
 1. ea-right-sidebar
 
-> Note: All the position section are fixed, by default content has overflow (It can be replaced by styles if needed)
+> Note: All the position sections are fixed, by default content has overflow (It can be replaced by styles if needed)
 
 ```html
 <ea-layout mode="vertical | horizontal">
