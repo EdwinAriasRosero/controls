@@ -7,7 +7,7 @@ const PORTAL_NAME = 'my-header-content-here';
     selector: 'app-child',
     template: `
     <ea-portal-content name="${PORTAL_NAME}">
-      child {{ name() }} content modev
+      child {{ name() }} content moved
     </ea-portal-content>
 
     This is a normal contetn from child {{ name() }}

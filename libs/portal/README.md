@@ -4,7 +4,7 @@ Portal moves html content from component A to component B
 
 # Demo
 
-https://stackblitz.com/edit/stackblitz-starters-jsxndn
+https://stackblitz.com/edit/stackblitz-starters-jsxndn?file=src%2Fmain.ts
 
 ## Dependencies
 

@@ -4,7 +4,7 @@ Add a circular indicator of progress
 
 # Demo
 
-https://stackblitz.com/edit/stackblitz-starters-coddjt
+https://stackblitz.com/edit/stackblitz-starters-coddjt?file=src%2Fmain.ts
 
 # Installation
 > npm i @control-ea/spinner

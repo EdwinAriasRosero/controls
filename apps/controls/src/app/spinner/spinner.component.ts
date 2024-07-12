@@ -1,30 +1,43 @@
-import { Component } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { SpinnerComponent, SpinnerService } from '@ea-spinner';
 import { timer } from "rxjs";
 
 @Component({
     selector: 'app-layout',
-    template: `<ea-spinner><img src="https://i.pinimg.com/originals/ab/76/17/ab761745f01df090ec38b827dd65e58a.gif" /></ea-spinner>`,
+    template: `<button (click)="show(false)">show default</button>
+        <button (click)="show(true)">show custom</button>
+
+        @if (!showCustom()) {
+            <ea-spinner />
+        } @else {
+            <ea-spinner>
+                <img src="https://i.pinimg.com/originals/ab/76/17/ab761745f01df090ec38b827dd65e58a.gif" />
+            </ea-spinner>
+        }`,
     standalone: true,
     imports: [SpinnerComponent]
 })
 export class SpinnerComponentWrap {
 
-    constructor(private spinnerService: SpinnerService) {
+    showCustom = signal(false);
 
-        this.spinnerService.show("Saving data...");
+    constructor(private spinnerService: SpinnerService) { }
 
-        timer(1000).subscribe(_ => {
-            this.spinnerService.show("Data saved...");
-        })
+    show(custom: boolean) {
+        this.showCustom.set(custom);
 
-        timer(2000).subscribe(_ => {
-            this.spinnerService.show("Loading data...");
-        })
+        this.spinnerService.show('Saving data...');
 
-        timer(3000).subscribe(_ => {
-            this.spinnerService.hide();
+        timer(1000).subscribe((_) => {
+            this.spinnerService.show('Data saved...');
         });
 
+        timer(2000).subscribe((_) => {
+            this.spinnerService.show('Loading data...');
+        });
+
+        timer(3000).subscribe((_) => {
+            this.spinnerService.hide();
+        });
     }
 }

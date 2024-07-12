@@ -4,7 +4,7 @@ Layout with usual position designed with flex, it allows user to choose between 
 
 # Demo
 
-https://stackblitz.com/edit/stackblitz-starters-pppgnh
+https://stackblitz.com/edit/stackblitz-starters-pppgnh?file=src%2Fmain.ts
 
 # Installation
 > npm i @control-ea/layout
