@@ -1,0 +1,15 @@
+{
+  "name": "@control-ea/spinner",
+  "version": "0.0.2",
+  "peerDependencies": {
+    "@angular/common": "^18.0.0",
+    "@angular/core": "^18.0.0"
+  },
+  "sideEffects": false,
+  "keywords": [
+    "angular",
+    "material",
+    "spinner",
+    "loader"
+  ]
+}
