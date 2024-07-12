@@ -1,11 +1,37 @@
-import { Component } from '@angular/core';
+import { Component, effect, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Portal, PortalModule } from "@angular/cdk/portal";
+import { Subscription } from 'rxjs';
+import { PortalService } from './portal.service';
 
 @Component({
-  selector: 'lib-portal',
+  selector: 'ea-portal',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './portal.component.html',
-  styleUrl: './portal.component.css',
+  imports: [CommonModule, PortalModule],
+  template: `
+  @if (selectedPortal) {
+    <ng-template [cdkPortalOutlet]="selectedPortal"></ng-template>
+  }`
 })
-export class PortalComponent {}
+export class PortalComponent<T> {
+
+  name = input('');
+  selectedPortal!: Portal<T>;
+
+  private subscription?: Subscription;
+
+  constructor(private portalService: PortalService) {
+
+    effect(() => {
+      this.subscription?.unsubscribe();
+      
+      this.subscription = this.portalService.subscribe(this.name(), domportal => {
+        this.selectedPortal = domportal;
+      });
+    });
+
+  }
+}
+
+
+

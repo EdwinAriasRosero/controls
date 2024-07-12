@@ -1,7 +1,9 @@
 Component list
 
 <ul>
-    <li> <a routerLink="layout">Layout</a> </li>
+    @for (route of routes; track route.path){
+    <li> <a [routerLink]="route.path">{{ route.path }}</a> </li>
+    }
 </ul>
 
 <router-outlet />
