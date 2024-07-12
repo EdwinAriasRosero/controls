@@ -2,6 +2,14 @@
 
 Portal moves html content from component A to component B
 
+# Demo
+
+https://stackblitz.com/edit/stackblitz-starters-jsxndn
+
+## Dependencies
+
+1. @angular/cdk@18.x.x
+
 # Installation
 > npm i @control-ea/portal
 
@@ -27,8 +35,5 @@ In component `B` adds the content to be showed in global position
     My child content
 <ea-portal-content>
 ```
-
-
-
 
 > Note: name attribute must be the same for sharing content betwwen parent and child components

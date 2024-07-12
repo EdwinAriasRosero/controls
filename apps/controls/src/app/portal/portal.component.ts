@@ -1,41 +1,60 @@
-import { Component } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { PortalComponent, PortalContentComponent } from '@ea-portal';
 
 const PORTAL_NAME = 'my-header-content-here';
 
 @Component({
-    selector: 'app-portal-child',
+    selector: 'app-child',
     template: `
     <ea-portal-content name="${PORTAL_NAME}">
-        <div style="border: solid thin blue;">
-            Content from child
-        </div>
+      child {{ name() }} content modev
     </ea-portal-content>
 
-    Normal Child content`,
+    This is a normal contetn from child {{ name() }}
+    `,
     standalone: true,
     imports: [PortalContentComponent]
 })
 export class PortalChildComponentWrap {
-
+    name = input.required<string>();
 }
 
 
 @Component({
-    selector: 'app-portal',
-    template: `
-    <div style="border: solid thin red;">
-        parent content
-        <ea-portal name="${PORTAL_NAME}" />
-    </div>
-    <main>My normal content<main>
- 
-    <app-portal-child />
-    `,
+    selector: 'app-root',
     standalone: true,
-    imports: [PortalComponent, PortalChildComponentWrap]
+    imports: [PortalComponent, PortalChildComponentWrap],
+    template: `
+      <div style="border: solid thin blue">
+        Parent Component
+        <strong>
+            <ea-portal name="${PORTAL_NAME}" />
+        </strong>
+      </div>
+
+      Content from parent
+  
+      <button (click)="changeChild(1)">Child 1</button>
+      <button (click)="changeChild(2)">Child 2</button>
+
+      <div style="border: solid thin red">
+          Space for children content
+        
+        @switch(child) {
+            @case (1) {
+            <app-child name="1" />
+            }
+            @case (2) {
+            <app-child name="2" />
+            }
+        }
+      </div>`
 })
 export class PortalComponentWrap {
+    child = 1;
 
+    changeChild(value: number) {
+        this.child = value;
+    }
 }
 

@@ -1,13 +1,13 @@
 import { DomPortal } from "@angular/cdk/portal";
 import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PortalService {
 
-  private eventList: Array<{ event: string; source: Subject<any>; }> = [];
+  private eventList: Array<{ event: string; source: BehaviorSubject<any>; }> = [];
 
   updateContent(event: string, data: DomPortal<any>) {
     this.getEvent(event).source?.next(data);
@@ -25,7 +25,7 @@ export class PortalService {
     let currentEvent = this.eventList.find(e => e.event === event);
 
     if (!currentEvent) {
-      currentEvent = { event, source: new Subject<DomPortal<any>>() };
+      currentEvent = { event, source: new BehaviorSubject<DomPortal<any> | null>(null) };
       this.eventList.push(currentEvent);
     }
 

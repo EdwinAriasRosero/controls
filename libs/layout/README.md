@@ -2,6 +2,10 @@
 
 Layout with usual position designed with flex, it allows user to choose between vertical and horizontal position
 
+# Demo
+
+https://stackblitz.com/edit/stackblitz-starters-pppgnh
+
 # Installation
 > npm i @control-ea/layout
 
