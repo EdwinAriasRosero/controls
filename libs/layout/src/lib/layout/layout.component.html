@@ -1,0 +1,51 @@
+<ng-template #header>
+    <ng-content select="[ea-header]"></ng-content>
+</ng-template>
+
+<ng-template #footer>
+    <ng-content select="[ea-footer]"></ng-content>
+</ng-template>
+
+<ng-template #content>
+    <section ea-content>
+        <ng-content></ng-content>
+    </section>
+</ng-template>
+
+<ng-template #leftSidebar>
+    <ng-content select="[ea-left-sidebar]"></ng-content>
+</ng-template>
+
+<ng-template #rightSidebar>
+    <ng-content select="[ea-right-sidebar]"></ng-content>
+</ng-template>
+
+@if(mode() === 'vertical') {
+
+<section class="layout">
+    <ng-container [ngTemplateOutlet]="header" />
+
+    <section class="internal-content">
+        <ng-container [ngTemplateOutlet]="leftSidebar" />
+        <ng-container [ngTemplateOutlet]="content" />
+        <ng-container [ngTemplateOutlet]="rightSidebar" />
+    </section>
+
+    <ng-container [ngTemplateOutlet]="footer" />
+</section>
+
+} @else {
+
+<section class="layout horizontal">
+    <ng-container [ngTemplateOutlet]="leftSidebar" />
+
+    <section class="internal-content">
+        <ng-container [ngTemplateOutlet]="header" />
+        <ng-container [ngTemplateOutlet]="content" />
+        <ng-container [ngTemplateOutlet]="footer" />
+    </section>
+
+    <ng-container [ngTemplateOutlet]="rightSidebar" />
+</section>
+
+}

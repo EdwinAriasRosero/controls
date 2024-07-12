@@ -1,0 +1,49 @@
+.layout {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    [ea-header] {
+        height: auto;
+    }
+
+    .internal-content {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: 100%;
+    }
+
+    section.internal-content,
+    [ea-content] {
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+    }
+}
+
+.layout.horizontal {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+
+    [ea-header] {
+        height: auto;
+    }
+
+    .internal-content {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+    }
+
+    section.internal-content,
+    [ea-content] {
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+    }
+}
