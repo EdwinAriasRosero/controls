@@ -44,8 +44,13 @@ constructor(private spinnerService: SpinnerService) {
 }
 ```
 
-
-
-
 > Note: color and message inputs are optional
 > Note: You can send optional content in `<ea-spinner> <img src="img.gif"> </ea-spinner>` if you want to customize spinner, services you can continue using in same way
+
+## Result
+
+![Spinner](https://github.com/EdwinAriasRosero/controls/blob/main/libs/spinner/assets/spinner.png?raw=true)
+
+## Custom content
+
+![Custom spinner](https://github.com/EdwinAriasRosero/controls/blob/main/libs/spinner/assets/spinner-custom.png?raw=true)
