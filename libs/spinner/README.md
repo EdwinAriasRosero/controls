@@ -7,13 +7,13 @@ Add a circular indicator of progress
 https://stackblitz.com/edit/stackblitz-starters-coddjt?file=src%2Fmain.ts
 
 # Installation
-> npm i @control-ea/spinner
+> npm i @ea-controls/spinner
 
 # Instructions
 
 ## Modules
 ```ts
-import { SpinnerComponent } from '@control-ea/spinner';
+import { SpinnerComponent } from '@ea-controls/spinner';
 ```
 
 ## Use

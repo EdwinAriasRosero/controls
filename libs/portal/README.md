@@ -11,13 +11,13 @@ https://stackblitz.com/edit/stackblitz-starters-jsxndn?file=src%2Fmain.ts
 1. @angular/cdk@18.x.x
 
 # Installation
-> npm i @control-ea/portal
+> npm i @ea-controls/portal
 
 # Instructions
 
 ## Modules
 ```ts
-import { PortalComponent, PortalContentComponent } from '@control-ea/portal';
+import { PortalComponent, PortalContentComponent } from '@ea-controls/portal';
 ```
 
 ## Use

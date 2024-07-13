@@ -7,14 +7,14 @@ Layout with usual position designed with flex, it allows user to choose between 
 https://stackblitz.com/edit/stackblitz-starters-pppgnh?file=src%2Fmain.ts
 
 # Installation
-> npm i @control-ea/layout
+> npm i @ea-controls/layout
 
 # Instructions
 
 ## Modules
 
 ```ts
-import { LayoutComponent } from '@control-ea/layout';
+import { LayoutComponent } from '@ea-controls/layout';
 ```
 
 ## Use

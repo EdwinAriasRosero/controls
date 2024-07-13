@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "layout:publish": "nx build layout && npm publish dist/libs/layout --access=public",
-    "portal:publish": "nx build portal && npm publish dist/libs/portal --access=public",
-    "spinner:publish": "nx build spinner && npm publish dist/libs/spinner --access=public"
+    "publish:layout": "nx build layout && npm publish dist/libs/layout --access=public",
+    "publish:portal": "nx build portal && npm publish dist/libs/portal --access=public",
+    "publish:spinner": "nx build spinner && npm publish dist/libs/spinner --access=public"
   },
   "private": true,
   "dependencies": {

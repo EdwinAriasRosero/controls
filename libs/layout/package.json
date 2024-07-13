@@ -1,6 +1,6 @@
 {
-  "name": "@control-ea/layout",
-  "version": "0.0.8",
+  "name": "@ea-controls/layout",
+  "version": "0.0.2",
   "peerDependencies": {
     "@angular/common": "^18.0.0",
     "@angular/core": "^18.0.0"
