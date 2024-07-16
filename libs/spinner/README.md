@@ -16,7 +16,7 @@ https://stackblitz.com/edit/stackblitz-starters-coddjt?file=src%2Fmain.ts
 import { SpinnerComponent } from '@ea-controls/spinner';
 ```
 
-## Use
+## Usage
 
 Add in `app.component.html` the tag `<ea-spinner color="{optional}" />`
 

@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { PortalService } from './portal.service';
 
 @Component({
-  selector: 'ea-portal',
+  selector: 'ea-portal, *[ea-portal]',
   standalone: true,
   imports: [CommonModule, PortalModule],
   template: `
@@ -24,7 +24,7 @@ export class PortalComponent<T> {
 
     effect(() => {
       this.subscription?.unsubscribe();
-      
+
       this.subscription = this.portalService.subscribe(this.name(), domportal => {
         this.selectedPortal = domportal;
       });

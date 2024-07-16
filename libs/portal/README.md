@@ -20,7 +20,9 @@ https://stackblitz.com/edit/stackblitz-starters-jsxndn?file=src%2Fmain.ts
 import { PortalComponent, PortalContentComponent } from '@ea-controls/portal';
 ```
 
-## Use
+## Usage
+
+### ea-portal
 
 In component `A` adds global position
 
@@ -28,6 +30,15 @@ In component `A` adds global position
 Parent Component
 <ea-portal name="my-name" />
 ```
+
+Also you can use following approach
+
+```hmtl
+Parent Component
+<div ea-portal name="my-name" />
+```
+
+### ea-portal-content
 
 In component `B` adds the content to be showed in global position
 ```hmtl

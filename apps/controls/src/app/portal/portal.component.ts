@@ -4,31 +4,31 @@ import { PortalComponent, PortalContentComponent } from '@ea-portal';
 const PORTAL_NAME = 'my-header-content-here';
 
 @Component({
-    selector: 'app-child',
-    template: `
+  selector: 'app-child',
+  template: `
     <ea-portal-content name="${PORTAL_NAME}">
       child {{ name() }} content moved
     </ea-portal-content>
 
     This is a normal contetn from child {{ name() }}
     `,
-    standalone: true,
-    imports: [PortalContentComponent]
+  standalone: true,
+  imports: [PortalContentComponent]
 })
 export class PortalChildComponentWrap {
-    name = input.required<string>();
+  name = input.required<string>();
 }
 
 
 @Component({
-    selector: 'app-root',
-    standalone: true,
-    imports: [PortalComponent, PortalChildComponentWrap],
-    template: `
+  selector: 'app-root',
+  standalone: true,
+  imports: [PortalComponent, PortalChildComponentWrap],
+  template: `
       <div style="border: solid thin blue">
         Parent Component
         <strong>
-            <ea-portal name="${PORTAL_NAME}" />
+            <div ea-portal name="${PORTAL_NAME}" ></div>
         </strong>
       </div>
 
@@ -51,10 +51,10 @@ export class PortalChildComponentWrap {
       </div>`
 })
 export class PortalComponentWrap {
-    child = 1;
+  child = 1;
 
-    changeChild(value: number) {
-        this.child = value;
-    }
+  changeChild(value: number) {
+    this.child = value;
+  }
 }
 

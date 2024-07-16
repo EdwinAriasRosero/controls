@@ -17,7 +17,7 @@ https://stackblitz.com/edit/stackblitz-starters-pppgnh?file=src%2Fmain.ts
 import { LayoutComponent } from '@ea-controls/layout';
 ```
 
-## Use
+## Usage
 
 Apply classes to parent tags (Usually html, body and app-root), this should be in styles.scss
 
