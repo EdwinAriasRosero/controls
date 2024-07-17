@@ -4,7 +4,7 @@ Control to show a carousel with content defined by user
 
 # Demo
 
-https://stackblitz.com/edit/stackblitz-starters-coddjt?file=src%2Fmain.ts
+https://stackblitz.com/edit/stackblitz-starters-ggdtzg?file=src%2Fmain.ts
 
 # Installation
 > npm i @ea-controls/slidder
