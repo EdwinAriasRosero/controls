@@ -6,7 +6,8 @@
     "start": "npx nx serve controls",
     "publish:layout": "nx build layout && npm publish dist/libs/layout --access=public",
     "publish:portal": "nx build portal && npm publish dist/libs/portal --access=public",
-    "publish:spinner": "nx build spinner && npm publish dist/libs/spinner --access=public"
+    "publish:spinner": "nx build spinner && npm publish dist/libs/spinner --access=public",
+    "publish:slidder": "nx build slidder && npm publish dist/libs/slidder --access=public"
   },
   "private": true,
   "dependencies": {

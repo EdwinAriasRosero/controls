@@ -1,5 +1,5 @@
 import { Component, signal } from "@angular/core";
-import { SpinnerComponent, SpinnerService } from '@ea-spinner';
+import { SpinnerComponent, SpinnerService } from '@ea-controls/spinner';
 import { timer } from "rxjs";
 
 @Component({

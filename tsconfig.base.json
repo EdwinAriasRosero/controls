@@ -15,9 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@ea-layout": ["libs/layout/src/index.ts"],
-      "@ea-portal": ["libs/portal/src/index.ts"],
-      "@ea-spinner": ["libs/spinner/src/index.ts"]
+      "@ea-controls/layout": ["libs/layout/src/index.ts"],
+      "@ea-controls/portal": ["libs/portal/src/index.ts"],
+      "@ea-controls/slidder": ["libs/slidder/src/index.ts"],
+      "@ea-controls/spinner": ["libs/spinner/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

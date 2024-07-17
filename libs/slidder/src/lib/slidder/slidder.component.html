@@ -1,0 +1,24 @@
+@for (item of items(); track $index; let i = $index) {
+
+    @if(currentVisible() === i){
+    <ng-container [ngTemplateOutlet]="item.templateRef"></ng-container>
+    }
+    }
+    
+    @if (showIndicator()) {
+    <section class="indicator">
+        @for (item of items(); track $index; let i = $index) {
+        <div [class.active]="currentVisible() === i" (click)="exact(i)"></div>
+        }
+    </section>
+    }
+    
+    @if (showNavigation()) {
+    <div class="next" (click)="next()">
+        &gt;
+    </div>
+    
+    <div class="previous" (click)="previous()">
+        &lt;
+    </div>
+    }

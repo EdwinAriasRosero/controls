@@ -1,5 +1,5 @@
 import { Component, input } from "@angular/core";
-import { PortalComponent, PortalContentComponent } from '@ea-portal';
+import { PortalComponent, PortalContentComponent } from '@ea-controls/portal';
 
 const PORTAL_NAME = 'my-header-content-here';
 
