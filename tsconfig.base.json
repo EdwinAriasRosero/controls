@@ -16,7 +16,11 @@
     "baseUrl": ".",
     "paths": {
       "@ea-controls/layout": ["libs/layout/src/index.ts"],
+      "@ea-controls/ngrx-repository-webapi": [
+        "libs/ngrx/repository-webapi/src/index.ts"
+      ],
       "@ea-controls/portal": ["libs/portal/src/index.ts"],
+      "@ea-controls/repository": ["libs/repository/src/index.ts"],
       "@ea-controls/slidder": ["libs/slidder/src/index.ts"],
       "@ea-controls/spinner": ["libs/spinner/src/index.ts"]
     }

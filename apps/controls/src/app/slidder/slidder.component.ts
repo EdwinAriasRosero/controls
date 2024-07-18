@@ -1,5 +1,4 @@
-import { Component, signal } from "@angular/core";
-import { timer } from "rxjs";
+import { Component } from "@angular/core";
 import { SlidderComponent, SlidderItemDirective } from "@ea-controls/slidder";
 
 @Component({
