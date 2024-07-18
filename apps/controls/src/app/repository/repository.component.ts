@@ -1,16 +1,15 @@
 import { JsonPipe } from "@angular/common";
 import { Component, OnInit, signal } from "@angular/core";
-import { EntityAdapter } from "@ea-controls/repository";
 import { Store } from "@ngrx/store";
+import { userAdapter } from "../app.config";
 
 
 export interface UserEntity {
-    lastName: string;
-    id: number;
+    id: string;
+    name: string;
+    description: string;
+    status: string;
 }
-
-
-export const userAdapter = new EntityAdapter<UserEntity>("user");
 
 
 @Component({
@@ -19,17 +18,25 @@ export const userAdapter = new EntityAdapter<UserEntity>("user");
     <button (click)="add()">Add</button>
     <button (click)="delete()">delete First</button>
 
+    <div style="border: solid thin blue;">
+        {{ selected() | json }}
+    </div>
+
+    <div style="border: solid thin red;">
     @for (item of data(); track item) {
     <ul>
-        <li> {{ item.lastName }} </li>
+        <li> {{ item | json }} </li>
     </ul>
-    }`,
+    }
+    </div>
+    `,
     standalone: true,
     imports: [JsonPipe]
 })
 export class RepositoryComponentWrap implements OnInit {
 
     data = signal<UserEntity[]>([]);
+    selected = signal<UserEntity | undefined>(undefined);
     static id: number = 0;
 
     constructor(private store: Store) { }
@@ -40,11 +47,22 @@ export class RepositoryComponentWrap implements OnInit {
         this.store.select(userAdapter.feature).subscribe(data => {
             this.data.set(data);
         })
+
+        this.store.select(userAdapter.selectById("2")).subscribe(data => {
+            this.selected.set(data);
+        })
     }
 
     add() {
-        RepositoryComponentWrap.id++;
-        this.store.dispatch(userAdapter.addOne({ data: { id: RepositoryComponentWrap.id, lastName: `Arias ${RepositoryComponentWrap.id}` } }))
+        RepositoryComponentWrap.id = this.data().length;
+        this.store.dispatch(userAdapter.addOne({
+            data: {
+                id: `${RepositoryComponentWrap.id}`,
+                name: `Edwin`,
+                description: "test",
+                status: "active"
+            }
+        }))
     }
 
     delete() {

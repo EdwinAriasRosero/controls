@@ -2,13 +2,28 @@ import { ApplicationConfig, isDevMode, provideZoneChangeDetection } from '@angul
 import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { provideState, provideStore } from '@ngrx/store';
-import { userAdapter } from './repository/repository.component';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { WebApiEffect, WebApiEffectRegister } from "@ea-controls/ngrx-repository-webapi";
 import { provideEffects } from '@ngrx/effects';
 import { provideHttpClient } from '@angular/common/http';
+import { EntityAdapter } from '@ea-controls/repository';
+import { UserEntity } from './repository/repository.component';
+
+export const userAdapter = new EntityAdapter<UserEntity>("items");
 
 WebApiEffectRegister.register(userAdapter);
+WebApiEffectRegister.configure({
+  urlBase: `http://localhost:3000`,
+  tranformGetResponse: (data: any, action: string) => {
+    console.log(action, data);
+    return data;
+  },
+  getId: (data: any) => {
+    console.log('id invoked', data);
+
+    return data.id;
+  }
+});
 
 export const appConfig: ApplicationConfig = {
   providers: [

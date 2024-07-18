@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { switchMap } from 'rxjs/operators';
+import { exhaustMap, map, switchMap } from 'rxjs/operators';
 import { Actions, ofType, createEffect, } from '@ngrx/effects';
 import { HttpClient } from '@angular/common/http';
 import { EntityAdapter } from "@ea-controls/repository";
@@ -7,7 +7,19 @@ import { EMPTY } from 'rxjs';
 
 
 export interface WebApiEffectRegisterSettings {
-    urlFormat?: string;
+    urlBase?: string;
+
+    tranformGetResponse?: (data: any, action: string) => any;
+
+    tranformPostData?: (data: any, action: string) => any;
+    tranformPatchData?: (data: any, action: string) => any;
+    tranformRemoveData?: (data: any, action: string) => any;
+
+    getId?: (data: any) => string;
+    getUrl?: (action: any) => string;
+    postUrl?: (action: any) => string;
+    patchUrl?: (action: any, a: any) => string;
+    removeUrl?: (action: any, a: any) => string;
 }
 
 export class WebApiEffectRegister {
@@ -19,16 +31,17 @@ export class WebApiEffectRegister {
     }
 
     static options: WebApiEffectRegisterSettings = {
-        urlFormat: "https://localhost:4200/${entityName}"
+        urlBase: "https://localhost:4200",
+        tranformGetResponse: data => data,
+        getId: (data: any) => data.id,
+        getUrl: (action: string) => `${WebApiEffectRegister.options.urlBase}/${action}`,
+        postUrl: (action: string) => `${WebApiEffectRegister.options.urlBase}/${action}`,
+        patchUrl: (action: string, data: any) => `${WebApiEffectRegister.options.urlBase}/${action}/${WebApiEffectRegister.options.getId!(data)}`,
+        removeUrl: (action: string, data: any) => `${WebApiEffectRegister.options.urlBase}/${action}/${WebApiEffectRegister.options.getId!(data)}`,
     };
 
     static configure(options: WebApiEffectRegisterSettings) {
         this.options = { ...this.options, ...options };
-    }
-
-    static getUrl(name: string) {
-        return (WebApiEffectRegister.options.urlFormat || '')
-            ?.replace("${entityName}", name);
     }
 }
 
@@ -39,18 +52,28 @@ export class WebApiEffect {
         private httpClient: HttpClient
     ) { }
 
-    get$ = createEffect(() => {
-        const addActions = WebApiEffectRegister
+    get$ = createEffect((): any => {
+        const actions = WebApiEffectRegister
             .entityList
-            .map(e => ({ name: e.name, type: e.getAll.type }));
+            .map(e => ({ name: e.name, type: e.getAll.type, setType: e.setAll }));
 
         return this.actions$.pipe(
-            ofType(...addActions.map(x => x.type)),
-            switchMap((action) => {
-                const url = addActions.find(u => u.type === action.type)?.name;
+            ofType(...actions.map(x => x.type)),
+            exhaustMap((action) => {
+                const actionInfo = actions.find(u => u.type === action.type);
+                const url = actionInfo?.name;
 
                 if (url) {
-                    return this.httpClient.get<any>(WebApiEffectRegister.getUrl(url));
+                    return this.httpClient
+                        .get<any>(WebApiEffectRegister.options.getUrl!(url))
+                        .pipe(
+                            map((response) => {
+
+                                return WebApiEffectRegister.options.tranformGetResponse
+                                    ? actionInfo.setType({ data: WebApiEffectRegister.options.tranformGetResponse(response, url) })
+                                    : actionInfo.setType({ data: response });
+                            })
+                        );
                 } else {
                     throw Error(`action '${action.type}' is not registered`);
                 }
@@ -60,18 +83,22 @@ export class WebApiEffect {
     });
 
     add$ = createEffect((): any => {
-        const addActions = WebApiEffectRegister
+        const actions = WebApiEffectRegister
             .entityList
             .map(e => ({ name: e.name, type: e.addOne.type }));
 
         return this.actions$.pipe(
-            ofType(...addActions.map(x => x.type)),
+            ofType(...actions.map(x => x.type)),
             switchMap(action => {
 
-                const url = addActions.find(u => u.type === action.type)?.name;
+                const url = actions.find(u => u.type === action.type)?.name;
 
                 if (url) {
-                    return this.httpClient.post(WebApiEffectRegister.getUrl(url), (<any>action).data)
+                    const data = WebApiEffectRegister.options.tranformPostData
+                        ? WebApiEffectRegister.options.tranformPostData((<any>action).data, url)
+                        : (<any>action).data;
+
+                    return this.httpClient.post(WebApiEffectRegister.options.postUrl!(url), data)
                         .pipe(
                             switchMap(response => EMPTY)
                         );
@@ -83,18 +110,22 @@ export class WebApiEffect {
     });
 
     patch$ = createEffect((): any => {
-        const addActions = WebApiEffectRegister
+        const actions = WebApiEffectRegister
             .entityList
             .map(e => ({ name: e.name, type: e.patchOne.type }));
 
         return this.actions$.pipe(
-            ofType(...addActions.map(x => x.type)),
+            ofType(...actions.map(x => x.type)),
             switchMap(action => {
 
-                const url = addActions.find(u => u.type === action.type)?.name;
+                const url = actions.find(u => u.type === action.type)?.name;
 
                 if (url) {
-                    return this.httpClient.patch(`${WebApiEffectRegister.getUrl(url)}/${(<any>action).data.id}`, (<any>action).data);
+                    const data = WebApiEffectRegister.options.tranformPatchData
+                        ? WebApiEffectRegister.options.tranformPatchData((<any>action).data, url)
+                        : (<any>action).data;
+
+                    return this.httpClient.patch(WebApiEffectRegister.options.patchUrl!(url, data), data);
                 } else {
                     throw Error(`action '${action.type}' is not registered`);
                 }
@@ -103,18 +134,21 @@ export class WebApiEffect {
     });
 
     remove$ = createEffect((): any => {
-        const addActions = WebApiEffectRegister
+        const actions = WebApiEffectRegister
             .entityList
             .map(e => ({ name: e.name, type: e.removeOne.type }));
 
         return this.actions$.pipe(
-            ofType(...addActions.map(x => x.type)),
+            ofType(...actions.map(x => x.type)),
             switchMap(action => {
 
-                const url = addActions.find(u => u.type === action.type)?.name;
+                const url = actions.find(u => u.type === action.type)?.name;
 
                 if (url) {
-                    return this.httpClient.delete(`${WebApiEffectRegister.getUrl(url)}/${(<any>action).data.id}`);
+                    return this.httpClient.delete(WebApiEffectRegister.options.removeUrl!(url, (<any>action).data))
+                        .pipe(
+                            switchMap(_ => EMPTY)
+                        );
                 } else {
                     throw Error(`action '${action.type}' is not registered`);
                 }
@@ -123,18 +157,18 @@ export class WebApiEffect {
     });
 
     removeById$ = createEffect((): any => {
-        const addActions = WebApiEffectRegister
+        const actions = WebApiEffectRegister
             .entityList
             .map(e => ({ name: e.name, type: e.removeById.type }));
 
         return this.actions$.pipe(
-            ofType(...addActions.map(x => x.type)),
+            ofType(...actions.map(x => x.type)),
             switchMap(action => {
 
-                const url = addActions.find(u => u.type === action.type)?.name;
+                const url = actions.find(u => u.type === action.type)?.name;
 
                 if (url) {
-                    return this.httpClient.delete(`${WebApiEffectRegister.getUrl(url)}/${(<any>action).id}`);
+                    return this.httpClient.delete(WebApiEffectRegister.options.removeUrl!(url, { id: (<any>action).id }));
                 } else {
                     throw Error(`action '${action.type}' is not registered`);
                 }
