@@ -1,9 +1,9 @@
 /* eslint-disable */
 export default {
   displayName: 'ngrx-repository',
-  preset: '../../jest.preset.js',
+  preset: '../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../../coverage/libs/repository',
+  coverageDirectory: '../../../coverage/libs/ngrx/repository',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

@@ -1,1 +1,1 @@
-export * from './lib/repository/EntityAdapter';
+export * from './lib/ngrx-repository/entity-adapter';

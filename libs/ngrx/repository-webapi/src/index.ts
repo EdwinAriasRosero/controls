@@ -1,1 +1,1 @@
-export * from './lib/repository-webapi/entity-webapi.effect';
+export * from './lib/ngrx-repository-webapi/entity-webapi-effects';

@@ -6,6 +6,5 @@
     "@angular/core": "^18.0.0",
     "@ngrx/store": "^18.0.1"
   },
-  "sideEffects": false,
-  "dependencies": {}
+  "sideEffects": false
 }
