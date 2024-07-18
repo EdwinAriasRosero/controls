@@ -1,5 +1,5 @@
 {
-  "name": "repository-webapi",
+  "name": "ngrx-repository-webapi",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ngrx/repository-webapi/src",
   "prefix": "lib",

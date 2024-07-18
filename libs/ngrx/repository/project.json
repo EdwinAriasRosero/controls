@@ -1,32 +1,36 @@
 {
-  "name": "repository",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/repository/src",
+  "name": "ngrx-repository",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/ngrx/repository/src",
   "prefix": "lib",
   "projectType": "library",
   "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/angular:package",
-      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/dist/{projectRoot}"
+      ],
       "options": {
-        "project": "libs/repository/ng-package.json"
+        "project": "libs/ngrx/repository/ng-package.json"
       },
       "configurations": {
         "production": {
-          "tsConfig": "libs/repository/tsconfig.lib.prod.json"
+          "tsConfig": "libs/ngrx/repository/tsconfig.lib.prod.json"
         },
         "development": {
-          "tsConfig": "libs/repository/tsconfig.lib.json"
+          "tsConfig": "libs/ngrx/repository/tsconfig.lib.json"
         }
       },
       "defaultConfiguration": "production"
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
-        "jestConfig": "libs/repository/jest.config.ts"
+        "jestConfig": "libs/ngrx/repository/jest.config.ts"
       }
     },
     "lint": {

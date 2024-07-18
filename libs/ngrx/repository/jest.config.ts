@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'repository',
+  displayName: 'ngrx-repository',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   coverageDirectory: '../../coverage/libs/repository',

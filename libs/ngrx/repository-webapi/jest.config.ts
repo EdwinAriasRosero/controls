@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'repository-webapi',
+  displayName: 'ngrx-repository-webapi',
   preset: '../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   coverageDirectory: '../../../coverage/libs/ngrx/repository-webapi',

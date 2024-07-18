@@ -7,7 +7,9 @@
     "publish:layout": "nx build layout && npm publish dist/libs/layout --access=public",
     "publish:portal": "nx build portal && npm publish dist/libs/portal --access=public",
     "publish:spinner": "nx build spinner && npm publish dist/libs/spinner --access=public",
-    "publish:slidder": "nx build slidder && npm publish dist/libs/slidder --access=public"
+    "publish:slidder": "nx build slidder && npm publish dist/libs/slidder --access=public",
+    "publish:ngrx-repository": "nx build ngrx-repository && npm publish dist/libs/ngrx/repository --access=public",
+    "publish:ngrx-repository-webapi": "nx build ngrx-repository-webapi && npm publish dist/libs/ngrx/repository-webapi --access=public"
   },
   "private": true,
   "dependencies": {
