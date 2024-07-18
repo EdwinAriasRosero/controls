@@ -1,5 +1,5 @@
 {
-  "name": "@ea-controls/repository",
+  "name": "@ea-controls/ngrx-repository",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^18.0.0",

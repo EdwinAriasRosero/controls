@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { exhaustMap, map, switchMap } from 'rxjs/operators';
 import { Actions, ofType, createEffect, } from '@ngrx/effects';
 import { HttpClient } from '@angular/common/http';
-import { EntityAdapter } from "@ea-controls/repository";
+import { EntityAdapter } from "@ea-controls/ngrx-repository";
 import { EMPTY } from 'rxjs';
 
 

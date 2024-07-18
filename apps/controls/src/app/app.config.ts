@@ -6,7 +6,7 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { WebApiEffect, WebApiEffectRegister } from "@ea-controls/ngrx-repository-webapi";
 import { provideEffects } from '@ngrx/effects';
 import { provideHttpClient } from '@angular/common/http';
-import { EntityAdapter } from '@ea-controls/repository';
+import { EntityAdapter } from '@ea-controls/ngrx-repository';
 import { UserEntity } from './repository/repository.component';
 
 export const userAdapter = new EntityAdapter<UserEntity>("items");

@@ -10,7 +10,7 @@ App usually has table or collections of data, when developer tries to use ngrx i
 
 > npm i @ngrx/store@latest
 
-> npm i @ea-controls/repository@latest
+> npm i @ea-controls/ngrx-repository@latest
 
 ## Configuration
 
@@ -28,7 +28,7 @@ export interface UserEntity {
 Create an entity adapter of your model
 
 ```ts
-import { EntityAdapter } from '@ea-controls/repository';
+import { EntityAdapter } from '@ea-controls/ngrx-repository';
 
 export const userAdapter = new EntityAdapter<UserEntity>("users");
 ```
@@ -146,7 +146,7 @@ export class AddComponent
 When entityAdapter is created the constructor allows to customize id calculation, follow next approach if you need to change this
 
 ```ts
-import { EntityAdapter } from '@ea-controls/repository';
+import { EntityAdapter } from '@ea-controls/ngrx-repository';
 
 export const userAdapter = new EntityAdapter<UserEntity>("users", (item) => `${item.id}.${item.name}` );
 ```

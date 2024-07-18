@@ -1,22 +1,22 @@
 # repository-webapi
 
-Extends `@ea-controls/repository` making calls to web api with same adapter action calls
+Extends `@ea-controls/ngrx-repository` making calls to web api with same adapter action calls
 
 [ngrx official documentation](https://ngrx.io/)
 
-[@ea-controls/repository]()
+[@ea-controls/ngrx-repository]()
 
 ## Installation
 
 > npm i @ngrx/store@latest
 
-> npm i @ea-controls/repository@latest
+> npm i @ea-controls/ngrx-repository@latest
 
 > npm i @ea-controls/ngrx-repository-webapi@latest
 
 ## Configuration
 
-Follow same configuration instructions of `@ea-controls/repository`, after you can configure web api effects
+Follow same configuration instructions of `@ea-controls/ngrx-repository`, after you can configure web api effects
 
 ```ts
 import { WebApiEffect, WebApiEffectRegister } from "@ea-controls/ngrx-repository-webapi";
@@ -41,7 +41,7 @@ export const appConfig: ApplicationConfig = {
 
 ## Usage
 
-Follow same usage instructions of `@ea-controls/repository`
+Follow same usage instructions of `@ea-controls/ngrx-repository`
 
 >Note: For getting data first time you should call manually
 
