@@ -1,10 +1,18 @@
 {
   "name": "@ea-controls/ngrx-repository",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "peerDependencies": {
     "@angular/common": "^18.0.0",
     "@angular/core": "^18.0.0",
     "@ngrx/store": "^18.0.1"
   },
+  "keywords": [
+    "angular",
+    "ngrx",
+    "flux",
+    "repository",
+    "store"
+  ],
+  "author": "Edwin Arias",
   "sideEffects": false
 }

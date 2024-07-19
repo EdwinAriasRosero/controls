@@ -1,22 +1,23 @@
-# repository
+# Repository
 
-Avoid ngrx boilerplate for array of objects
+Simplify ngrx boilerplate for managing arrays of objects.
 
-App usually has table or collections of data, when developer tries to use ngrx it has to create actions (add, remove, update and add), also reducers for handling those actions and selectors
+App often involves tables or collections of data. When using ngrx, developers typically create actions (add, remove, update) and reducers to handle these actions, along with selectors.
 
 [ngrx official documentation](https://ngrx.io/)
 
 ## Installation
 
-> npm i @ngrx/store@latest
-
-> npm i @ea-controls/ngrx-repository@latest
+```bash
+npm i @ngrx/store@latest
+npm i @ea-controls/ngrx-repository@latest
+```
 
 ## Configuration
 
-Create an interface or class with your data structure
+Create an interface or class for your data structure:
 
-```ts
+```typescript
 export interface UserEntity {
     id: string;
     name: string;
@@ -25,17 +26,17 @@ export interface UserEntity {
 }
 ```
 
-Create an entity adapter of your model
+Create an entity adapter for your model:
 
-```ts
+```typescript
 import { EntityAdapter } from '@ea-controls/ngrx-repository';
 
 export const userAdapter = new EntityAdapter<UserEntity>("users");
 ```
 
-Register your adapters in module
+Register your adapters in the module:
 
-```ts
+```typescript
 export const appConfig: ApplicationConfig = {
   providers: [
     ...
@@ -47,112 +48,64 @@ export const appConfig: ApplicationConfig = {
 
 ## Usage
 
-Follow same use of ngrx, you can inject an store and call actions from adapter
+Use ngrx patterns. Inject the store and call actions using the adapter:
 
-```ts
+```typescript
 import { Store } from "@ngrx/store";
 
 @Component({...})
-export class AddComponent
-{
-    constructor(private store: Store) { }
-}
-```
-
-Now you can use the predefined actions/selectors in adapter
-
-```ts
-@Component({...})
-export class AddComponent
-{
+export class AddComponent {
     constructor(private store: Store) { }
 
-    data = signal<UserEntity[]>([]);
-    selected = signal<UserEntity | undefined>(undefined);
+    data: UserEntity[] = [];
+    selected: UserEntity | undefined;
 
     ngOnInit(): void {
-        this.store.select(userAdapter.feature).subscribe(data => this.data.set(data))
-        this.store.select(userAdapter.selectById("2")).subscribe(data => this.selected.set(data))
+        this.store.select(userAdapter.feature).subscribe(data => this.data = data);
+        this.store.select(userAdapter.selectById("2")).subscribe(data => this.selected = data);
     }
 
     add() {
         this.store.dispatch(userAdapter.addOne({
-            data: {
-                id: `{new id}`,
-                name: `Edwin`,
-                description: "repository test",
-                status: "active"
-            }
-        }))
+            id: `{new id}`,
+            name: `Edwin`,
+            description: "repository test",
+            status: "active"
+        }));
     }
 
     delete() {
-        this.store.dispatch(userAdapter.removeOne({ data: this.data()[0] }));
+        this.store.dispatch(userAdapter.removeOne({ id: this.data[0].id }));
     }
 }
 ```
 
 ## Actions / Selectors
 
-<table>
-<thead>
-    <tr>
-        <th>Action/Selector</th>
-        <th>Description</th>
-        <th>Values</th>
-    </tr>
-</thead>
-<tbody>
-    <tr>
-        <td>addOne(...)</td>
-        <td>Allows to add new item in the collection</td>
-        <td>Entity object</td>
-    </tr>
-    <tr>
-        <td>removeOne(...)</td>
-        <td>Remove one item from collection</td>
-        <td>Entity object</td>
-    </tr>
-    <tr>
-        <td>patchOne(...)</td>
-        <td>Update object in ngrx collection</td>
-        <td>Entity object</td>
-    </tr>
-    <tr>
-        <td>setAll([...])</td>
-        <td>Replace whole collection with data array</td>
-        <td>Entity object array</td>
-    </tr>
-    <tr>
-        <td>removeById(id)</td>
-        <td>Allows to remove one item from collection depending on id</td>
-        <td>string</td>
-    </tr>
-    <tr>
-        <td>feature()</td>
-        <td>Default selector, return complete collection data</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>selectById(id)</td>
-        <td>Return first coincidence of data depending on id</td>
-        <td>string</td>
-    </tr>
-</tbody>
-<table>
+| Action/Selector  | Description                                | Values         |
+|------------------|--------------------------------------------|----------------|
+| addOne(...)      | Add a new item to the collection           | Entity object  |
+| removeOne(...)   | Remove an item from the collection          | Entity object  |
+| patchOne(...)    | Update an object in the collection          | Entity object  |
+| setAll([...])    | Replace the entire collection with new data | Entity array   |
+| removeById(id)   | Remove an item from the collection by ID    | string         |
+| feature()        | Default selector, returns entire collection | -              |
+| selectById(id)   | Selects an item from collection by ID       | string         |
 
-### Customize Id calculation
+### Customize ID Calculation
 
-When entityAdapter is created the constructor allows to customize id calculation, follow next approach if you need to change this
+You can customize the ID calculation when creating the `EntityAdapter`. Use the following approach:
 
-```ts
+```typescript
 import { EntityAdapter } from '@ea-controls/ngrx-repository';
 
-export const userAdapter = new EntityAdapter<UserEntity>("users", (item) => `${item.id}.${item.name}` );
+export const userAdapter = new EntityAdapter<UserEntity>("users", (item) => `${item.id}.${item.name}`);
 ```
 
->Note: Consider default id is `item.id` 
+>Note: The default ID calculation uses `item.id`.
 
 ## Additional
 
-Check more packages for extending this approach allowing to use different dbs/apis for connecting data 
+Explore more packages that extend this approach, allowing integration with different databases or APIs for data management.
+
+1. [@ea-controls/ngrx-repository-webapi](https://www.npmjs.com/package/@ea-controls/ngrx-repository-webapi)

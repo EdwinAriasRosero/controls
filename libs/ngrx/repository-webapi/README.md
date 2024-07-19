@@ -1,31 +1,30 @@
 # repository-webapi
 
-Extends `@ea-controls/ngrx-repository` making calls to web api with same adapter action calls
+Extend `@ea-controls/ngrx-repository` to make API calls using the same adapter action calls.
 
 [ngrx official documentation](https://ngrx.io/)
 
-[@ea-controls/ngrx-repository]()
+[@ea-controls/ngrx-repository](https://link-to-your-package)
 
 ## Installation
 
-> npm i @ngrx/store@latest
-
-> npm i @ea-controls/ngrx-repository@latest
-
-> npm i @ea-controls/ngrx-repository-webapi@latest
+```bash
+npm i @ngrx/store@latest
+npm i @ea-controls/ngrx-repository@latest
+npm i @ea-controls/ngrx-repository-webapi@latest
+```
 
 ## Configuration
 
-Follow same configuration instructions of `@ea-controls/ngrx-repository`, after you can configure web api effects
+Follow the same configuration steps as `@ea-controls/ngrx-repository`. Afterward, configure the web API effects:
 
-```ts
+```typescript
 import { WebApiEffect, WebApiEffectRegister } from "@ea-controls/ngrx-repository-webapi";
 
 export const userAdapter = new EntityAdapter<UserEntity>("items");
 
 WebApiEffectRegister.register(userAdapter);
-WebApiEffectRegister.register(...);
-WebApiEffectRegister.register(...);
+// Register other adapters as needed
 
 WebApiEffectRegister.configure({
   urlBase: `http://localhost:3000`
@@ -41,12 +40,12 @@ export const appConfig: ApplicationConfig = {
 
 ## Usage
 
-Follow same usage instructions of `@ea-controls/ngrx-repository`
+Follow the same usage instructions as `@ea-controls/ngrx-repository`.
 
->Note: For getting data first time you should call manually
+>Note: For fetching data for the first time, you should call the `getAll()` method manually.
 
-```ts
-@Component(...)
+```typescript
+@Component({...})
 export class RepositoryComponentWrap implements OnInit {
     
     constructor(private store: Store) { }
@@ -57,81 +56,35 @@ export class RepositoryComponentWrap implements OnInit {
 }
 ```
 
-## Configuration
+## WebApiEffectRegister Options
 
-`@ea-controls/ngrx-repository-webapi` allows users to configure multiple data transformation and url format in order to be more flexible
+Configure `@ea-controls/ngrx-repository-webapi` for flexible data transformation and URL formats.
 
-### WebApiEffectRegister options
+| Option                  | Description                                          | Input                                   | Output                         |
+|-------------------------|------------------------------------------------------|-----------------------------------------|--------------------------------|
+| urlBase                 | Base URL for all API requests                        | -                                       | -                              |
+| transformGetResponse    | Transform data before updating the ngrx model        | data returned by httpClient.get method   | Processed data by user         |
+| transformPostData       | Modify data before making httpClient.post request     | data sent in ngrx action                | Processed data by user         |
+| transformPatchData      | Modify data before making httpClient.patch request    | data sent in ngrx action                | Processed data by user         |
+| transformRemoveData     | Modify data before making httpClient.delete request   | data sent in ngrx action                | Processed data by user         |
+| getId                   | Calculate ID used in delete/patch and other operations| data sent in ngrx action                | New ID (string)                |
+| getUrl                  | URL used in httpClient.get method                    | Current adapter name                    | URL string (default `${urlBase}/${adapterName}`) |
+| postUrl                 | URL used in httpClient.post method                   | Current adapter name                    | URL string (default `${urlBase}/${adapterName}`) |
+| patchUrl                | URL used in httpClient.patch method                  | Current adapter name, ID                | URL string (default `${urlBase}/${adapterName}/${id}`) |
+| removeUrl               | URL used in httpClient.delete method                 | Current adapter name, ID                | URL string (default `${urlBase}/${adapterName}/${id}`) |
 
-<table>
-<thead>
-    <tr>
-        <th>Option</th>
-        <th>Description</th>
-        <th>Input</th>
-        <th>Output</th>
-    </tr>
-</thead>
-<tbody>
-    <tr>
-        <td>urlBase</td>
-        <td>Url used to make all the petitions</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>tranformGetResponse(data, action)</td>
-        <td>Allows to transform data before updating the ngrx model</td>
-        <td>`data` returned by httpClient get method, `action` has entity adapter name</td>
-        <td>New data processed by user</td>
-    </tr>
-    <tr>
-        <td>tranformPostData(data, action)</td>
-        <td>Modify the data before making httpClient.post request</td>
-        <td>`data` send in ngrx action, `action` has entity adapter name</td>
-        <td>New data processed by user</td>
-    </tr>
-    <tr>
-        <td>tranformPatchData(data, action)</td>
-        <td>Modify the data before making httpClient.post request</td>
-        <td>`data` send in ngrx action, `action` has entity adapter name</td>
-        <td>New data processed by user</td>
-    </tr>
-    <tr>
-        <td>tranformRemoveData(data, action)</td>
-        <td>Modify the data before making httpClient.delete request</td>
-       <td>`data` send in ngrx action, `action` has entity adapter name</td>
-        <td>New data processed by user</td>
-    </tr>
-    <tr>
-        <td>getId: (data: any)</td>
-        <td>Allows to calculate used in delete/patch and other operations</td>
-       <td>`data` send in ngrx action</td>
-        <td>New id, string</td>
-    </tr>
-    <tr>
-        <td>getUrl: (action: any)</td>
-        <td>Url used in httpCliend.get method</td>
-        <td>Current adapter name</td>
-        <td>get url string, by default `${urlBase}/${apdaterName}`</td>
-    </tr>
-    <tr>
-        <td>postUrl: (action: any)</td>
-        <td>Url used in httpCliend.post method</td>
-        <td>Current adapter name</td>
-        <td>get url string, by default `${urlBase}/${apdaterName}`</td>
-    </tr>
-    <tr>
-        <td>patchUrl: (action: any)</td>
-        <td>Url used in httpCliend.patch method</td>
-        <td>Current adapter name</td>
-        <td>get url string, by default `${urlBase}/${apdaterName}/${id}`</td>
-    </tr>
-    <tr>
-        <td>removeUrl: (action: any)</td>
-        <td>Url used in httpCliend.delete method</td>
-        <td>Current adapter name</td>
-        <td>get url string, by default `${urlBase}/${apdaterName}/${id}`</td>
-    </tr>
-</tbody>
-<table>
+### Customize ID Calculation
+
+You can customize the ID calculation when creating the `EntityAdapter`. Use the following approach:
+
+```typescript
+import { EntityAdapter } from '@ea-controls/ngrx-repository';
+
+export const userAdapter = new EntityAdapter<UserEntity>("users", (item) => `${item.id}.${item.name}`);
+```
+
+>Note: The default ID calculation uses `item.id`.
+
+## Additional Information
+
+Explore additional packages that extend this approach, enabling integration with different databases or APIs for data management.

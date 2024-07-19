@@ -1,60 +1,74 @@
 # Spinner
 
-Add a circular indicator of progress
+The Spinner component provides a circular progress indicator.
 
 # Demo
 
-https://stackblitz.com/edit/stackblitz-starters-coddjt?file=src%2Fmain.ts
+Check out the demo on StackBlitz: [Demo](https://stackblitz.com/edit/stackblitz-starters-coddjt?file=src%2Fmain.ts)
 
 # Installation
-> npm i @ea-controls/spinner
+
+```bash
+npm i @ea-controls/spinner
+```
 
 # Instructions
 
 ## Modules
+
+Import `SpinnerComponent` from `@ea-controls/spinner` in your TypeScript file:
+
 ```ts
 import { SpinnerComponent } from '@ea-controls/spinner';
 ```
 
 ## Usage
 
-Add in `app.component.html` the tag `<ea-spinner color="{optional}" />`
+Add the `<ea-spinner>` tag in your `app.component.html`. You can optionally specify a color attribute.
 
-> Note: only add this tag once.
-
-```hmtl app.component.ts
-<ea-spinner color="red" />
+```html
+<ea-spinner color="red"></ea-spinner>
 ```
 
-In components now you can inject `SpinnerService` and use its methods `show(message?)` or `hide()`
+In your component, inject `SpinnerService` and use its methods `show(message?)` or `hide()` to control the spinner:
 
 ```ts
-constructor(private spinnerService: SpinnerService) {
+import { SpinnerService } from '@ea-controls/spinner';
+import { timer } from 'rxjs';
 
+constructor(private spinnerService: SpinnerService) {
     this.spinnerService.show("Saving data...");
 
     timer(1000).subscribe(_ => {
         this.spinnerService.show("Data saved...");
-    })
+    });
 
     timer(2000).subscribe(_ => {
         this.spinnerService.show("Loading data...");
-    })
+    });
 
     timer(3000).subscribe(_ => {
         this.spinnerService.hide();
     });
-
 }
 ```
 
-> Note: color and message inputs are optional
-> Note: You can send optional content in `<ea-spinner> <img src="img.gif"> </ea-spinner>` if you want to customize spinner, services you can continue using in same way
+> Note: `color` and `message` inputs in `<ea-spinner>` are optional.
+
+You can also customize the content inside `<ea-spinner>` if needed:
+
+```html
+<ea-spinner>
+    <img src="img.gif">
+</ea-spinner>
+```
 
 ## Result
 
 ![Spinner](https://github.com/EdwinAriasRosero/controls/blob/main/libs/spinner/assets/spinner.PNG?raw=true)
 
-## Custom content
+## Custom Content
 
-![Custom spinner](https://github.com/EdwinAriasRosero/controls/blob/main/libs/spinner/assets/spinner-custom.PNG?raw=true)
+You can customize the spinner content as shown below:
+
+![Custom Spinner](https://github.com/EdwinAriasRosero/controls/blob/main/libs/spinner/assets/spinner-custom.PNG?raw=true)

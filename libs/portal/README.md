@@ -1,21 +1,27 @@
 # Portal
 
-Portal moves html content from component A to component B
+The Portal component facilitates moving HTML content from one component (Component A) to another (Component B).
 
 # Demo
 
-https://stackblitz.com/edit/stackblitz-starters-jsxndn?file=src%2Fmain.ts
+Check out the demo on StackBlitz: [Demo](https://stackblitz.com/edit/stackblitz-starters-jsxndn?file=src%2Fmain.ts)
 
 ## Dependencies
 
-1. @angular/cdk@18.x.x
+- @angular/cdk@18.x.x
 
 # Installation
-> npm i @ea-controls/portal
+
+```bash
+npm i @ea-controls/portal
+```
 
 # Instructions
 
 ## Modules
+
+Import the `PortalComponent` and `PortalContentComponent` from `@ea-controls/portal` in your TypeScript file:
+
 ```ts
 import { PortalComponent, PortalContentComponent } from '@ea-controls/portal';
 ```
@@ -24,27 +30,28 @@ import { PortalComponent, PortalContentComponent } from '@ea-controls/portal';
 
 ### ea-portal
 
-In component `A` adds global position
+In Component A, define the global position where content will be moved:
 
-```hmtl
-Parent Component
+```html
+<!-- Parent Component -->
 <ea-portal name="my-name" />
 ```
 
-Also you can use following approach
+Alternatively, you can use a `<div>` approach:
 
-```hmtl
-Parent Component
+```html
+<!-- Parent Component -->
 <div ea-portal name="my-name" />
 ```
 
 ### ea-portal-content
 
-In component `B` adds the content to be showed in global position
-```hmtl
+In Component B, specify the content to be shown in the global position identified by the same `name` attribute:
+
+```html
 <ea-portal-content name="my-name">
     My child content
-<ea-portal-content>
+</ea-portal-content>
 ```
 
-> Note: name attribute must be the same for sharing content betwwen parent and child components
+> Note: The `name` attribute must be identical in both the parent and child components to share content effectively.

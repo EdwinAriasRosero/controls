@@ -1,6 +1,6 @@
 {
   "name": "@ea-controls/portal",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "peerDependencies": {
     "@angular/common": "^18.0.0",
     "@angular/core": "^18.0.0"
@@ -9,6 +9,9 @@
   "keywords": [
     "angular",
     "portal",
-    "angular-material/cdk"
-  ]
+    "angular-material/cdk",
+    "ng-template",
+    "ng-container"
+  ],
+  "author": "Edwin Arias"
 }

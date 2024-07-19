@@ -1,6 +1,6 @@
 {
   "name": "@ea-controls/layout",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "peerDependencies": {
     "@angular/common": "^18.0.0",
     "@angular/core": "^18.0.0"
@@ -8,7 +8,12 @@
   "keywords": [
     "angular",
     "layout",
-    "responsive"
+    "responsive",
+    "flex",
+    "header",
+    "footer",
+    "aside"
   ],
+  "author": "Edwin Arias",
   "sideEffects": false
 }

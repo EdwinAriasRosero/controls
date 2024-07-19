@@ -1,17 +1,22 @@
 # Layout
 
-Layout with usual position designed with flex, it allows user to choose between vertical and horizontal position
+The Layout component allows flexible positioning options with the ability to choose between vertical and horizontal layouts.
 
 # Demo
 
-https://stackblitz.com/edit/stackblitz-starters-pppgnh?file=src%2Fmain.ts
+Check out the demo on StackBlitz: [Demo](https://stackblitz.com/edit/stackblitz-starters-pppgnh?file=src%2Fmain.ts)
 
 # Installation
-> npm i @ea-controls/layout
+
+```bash
+npm i @ea-controls/layout
+```
 
 # Instructions
 
 ## Modules
+
+Import the `LayoutComponent` from `@ea-controls/layout` in your TypeScript file:
 
 ```ts
 import { LayoutComponent } from '@ea-controls/layout';
@@ -19,7 +24,7 @@ import { LayoutComponent } from '@ea-controls/layout';
 
 ## Usage
 
-Apply classes to parent tags (Usually html, body and app-root), this should be in styles.scss
+Apply these CSS rules to your main container tags (`html`, `body`, and `app-root`) in your `styles.scss`:
 
 ```css
 html,
@@ -33,14 +38,14 @@ app-root {
 }
 ```
 
-Use &lt;ea-layout&gt; tag for starting, after you can use optional attributes in your sections
+Use the `<ea-layout>` tag to start defining your layout. You can use optional attributes in your sections:
 
-1. ea-header
-1. ea-footer
-1. ea-left-sidebar
-1. ea-right-sidebar
+- `ea-header`
+- `ea-footer`
+- `ea-left-sidebar`
+- `ea-right-sidebar`
 
-> Note: All the position sections are fixed, by default content has overflow (It can be replaced by styles if needed)
+By default, all positioned sections are fixed, and content has overflow (which can be overridden with styles if necessary).
 
 ```html
 <ea-layout mode="vertical | horizontal">
@@ -50,29 +55,28 @@ Use &lt;ea-layout&gt; tag for starting, after you can use optional attributes in
     </section>
 
     <section ea-left-sidebar style="background-color: aqua;">
-        Left
+        Left Sidebar
     </section>
 
     <section ea-right-sidebar style="background-color: bisque;">
-        Right
+        Right Sidebar
     </section>
 
     <section ea-footer style="background-color: lightgreen;">
         Footer
     </section>
 
-    My content
+    <!-- Your main content goes here -->
 
 </ea-layout>
 ```
 
 # Result
 
-### Vertical
+### Vertical Layout
 
 ![Vertical layout](https://github.com/EdwinAriasRosero/controls/blob/main/libs/layout/assets/vertical.png?raw=true)
 
-
-### Horizontal
+### Horizontal Layout
 
 ![Horizontal layout](https://github.com/EdwinAriasRosero/controls/blob/main/libs/layout/assets/horizontal.png?raw=true)
