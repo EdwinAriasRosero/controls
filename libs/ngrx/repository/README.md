@@ -97,18 +97,16 @@ export class App {
         App.id = this.data().length;
 
         this.store.dispatch(userAdapter.addOne({
-          data: {
             id: `${App.id}`,
             name: `Edwin`,
             description: "test",
             status: "active"
-        }
         }));
     }
 
     delete() {
       let item = this.data()[0];
-      this.store.dispatch(userAdapter.removeOne({ data: item }));
+      this.store.dispatch(userAdapter.removeOne(item));
     }
 }
 ```
@@ -136,6 +134,41 @@ export const userAdapter = new EntityAdapter<UserEntity>("users", (item) => `${i
 ```
 
 >Note: The default ID calculation uses `item.id`.
+
+## Extensions
+
+You can extend `@ea-controls/ngrx-repository` creating your own effects that manages STATE, for achieving this change `{adapter}.launchBeforeActions = true` and now implement new `before actions`
+
+```typescript
+export const userAdapter = new EntityAdapter<UserEntity>("items");
+userAdapter.launchBeforeActions = true;
+```
+
+Now addOne, removeOne and other methods should execute beforeActions, and you should execute action dispatchers manually
+
+```typescript
+@Injectable()
+export class AdapterExtensionEffect {
+
+    constructor(private actions$: Actions, private httpClient: HttpClient) { }
+
+    get$ = createEffect(() => {
+
+        return this.actions$.pipe(
+            ofType(userAdapter.getAll().type),
+            exhaustMap(action => {
+                return this.httpClient.get<any>('http://myUrl.com/users')
+                    .pipe(
+                        map((response) => userAdapter._setAll({ data: response })),
+                        catchError((error) => of(userAdapter._erroGetAll({ error })))
+                    );
+
+            }))
+
+    });
+}
+```
+
 
 ## Additional
 

@@ -44,28 +44,23 @@ export class RepositoryComponentWrap implements OnInit {
     ngOnInit(): void {
         this.store.dispatch(userAdapter.getAll());
 
-        this.store.select(userAdapter.feature).subscribe(data => {
-            this.data.set(data);
-        })
-
-        this.store.select(userAdapter.selectById("2")).subscribe(data => {
-            this.selected.set(data);
-        })
+        //You can use async pipe in html to avoid this
+        this.store.select(userAdapter.feature).subscribe(data => this.data.set(data))
+        this.store.select(userAdapter.selectById("2")).subscribe(data => this.selected.set(data))
     }
 
     add() {
         RepositoryComponentWrap.id = this.data().length;
         this.store.dispatch(userAdapter.addOne({
-            data: {
-                id: `${RepositoryComponentWrap.id}`,
-                name: `Edwin`,
-                description: "test",
-                status: "active"
-            }
-        }))
+            id: `${RepositoryComponentWrap.id}`,
+            name: `Edwin`,
+            description: "test",
+            status: "active"
+        }
+        ))
     }
 
     delete() {
-        this.store.dispatch(userAdapter.removeOne({ data: this.data()[0] }));
+        this.store.dispatch(userAdapter.removeOne(this.data()[0]));
     }
 }
