@@ -128,17 +128,17 @@ export class App {
 
 ## OnSuccess/onFail
 
-Some actions receive extra callback info that allows you to run a statement when success/fail action
+Some actions receive extra callback information that allows you to run a statement upon success or failure.
 
-Imagine you can remove an item, and after it is removed you can do something else. For doing this you can follow next approach
+Imagine you need to remove an item, and after it is removed, you want to perform another action. To achieve this, you can follow the approach below:
 
->Note: By default those callbacks are disabled, but if you extends this library you can give them a new behavior usgin `before actions`
+> Note: By default, these callbacks are disabled. However, if you extend this library, you can provide them with new behavior using before actions.
 
 ```typescript
-this.store.dispatch({...} as UserEntity, 
+this.store.dispatch(userAdapter.addOne({...} as UserEntity, 
     (data) => { console.log('success operation', data); }, 
     (error) => { console.error('Error while removing', error) }
-)
+));
 ```
 
 ### Customize ID Calculation
