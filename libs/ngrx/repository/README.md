@@ -132,7 +132,7 @@ Some actions receive extra callback information that allows you to run a stateme
 
 Imagine you need to remove an item, and after it is removed, you want to perform another action. To achieve this, you can follow the approach below:
 
-> Note: By default, these callbacks are disabled. However, if you extend this library, you can provide them with new behavior using before actions.
+> Note: By default, these callbacks are disabled. However, if you extend this library, you can provide them with new behavior using `userAdapter.actions.before.....`.
 
 ```typescript
 this.store.dispatch(userAdapter.addOne({...} as UserEntity, 
