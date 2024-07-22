@@ -214,3 +214,4 @@ export class AdapterExtensionEffect {
 Explore more packages that extend this approach, allowing integration with different databases or APIs for data management.
 
 1. [@ea-controls/ngrx-repository-webapi](https://www.npmjs.com/package/@ea-controls/ngrx-repository-webapi)
+1. [@ea-controls/ngrx-repository-pouchdb](https://www.npmjs.com/package/@ea-controls/ngrx-repository-pouchdb)

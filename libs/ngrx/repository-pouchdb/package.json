@@ -1,12 +1,12 @@
 {
-  "name": "@ea-controls/ngrx-repository-webapi",
-  "version": "18.0.4",
+  "name": "@ea-controls/ngrx-repository-pouchdb",
+  "version": "18.0.1",
   "peerDependencies": {
     "@angular/common": "^18.0.0",
     "@angular/core": "^18.0.0",
-    "@ngrx/store": "^18.0.1",
-    "@ngrx/effects": "^18.0.1",
-    "@ea-controls/ngrx-repository": "18.0.4"
+    "pouchdb": "^9.0.0",
+    "@types/pouchdb": "^6.4.2",
+    "@ea-controls/ngrx-repository": "18.0.6"
   },
   "keywords": [
     "angular",
@@ -15,7 +15,9 @@
     "repository",
     "store",
     "effects",
-    "webapi",
+    "pouchdb",
+    "localstorage",
+    "sessionstorage",
     "@ea-controls/ngrx-repository"
   ],
   "author": "Edwin Arias",

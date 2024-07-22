@@ -1,8 +1,8 @@
 import { JsonPipe } from "@angular/common";
 import { Component, OnInit, signal } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { userAdapter } from "../app.config";
-
+import { EntityAdapter } from "@ea-controls/ngrx-repository";
+import { PouchDbEffect, PouchDbEffectRegister } from "@ea-controls/ngrx-repository-pouchdb";
 
 export interface UserEntity {
     userId: string;
@@ -11,9 +11,23 @@ export interface UserEntity {
     status: string;
 }
 
+export const userAdapterPouchDb = new EntityAdapter<UserEntity>("itemsP", input => input.userId);
+
+export const ConfigurePouchDbRepository = () => {
+    PouchDbEffectRegister.register(userAdapterPouchDb);
+    PouchDbEffectRegister.configure({
+        idField: 'userId'
+    });
+}
+
+export const getPouchDbEffects = () => {
+    return PouchDbEffect;
+}
+
+const userAdapter = userAdapterPouchDb;
 
 @Component({
-    selector: 'app-repository',
+    selector: 'app-repository-pouchdb',
     template: `
     <button (click)="add()">Add</button>
     <button (click)="delete()">delete First</button>
@@ -34,7 +48,7 @@ export interface UserEntity {
     standalone: true,
     imports: [JsonPipe]
 })
-export class RepositoryComponentWrap implements OnInit {
+export class RepositoryPouchDbComponent implements OnInit {
 
     data = signal<UserEntity[]>([]);
     selected = signal<UserEntity | undefined>(undefined);
@@ -50,10 +64,11 @@ export class RepositoryComponentWrap implements OnInit {
     }
 
     add() {
-        let maxId = 1 + Math.max(...this.data().map(d => Number(d.userId)));
+        let maxId = Math.max(...this.data().map(d => Number(d.userId)))
+        let newId = 1 + (maxId === -Infinity ? 0 : maxId);
 
         this.store.dispatch(userAdapter.addOne({
-            userId: maxId.toString(),
+            userId: newId.toString(),
             name: `Edwin`,
             description: "test",
             status: "active"
@@ -65,7 +80,7 @@ export class RepositoryComponentWrap implements OnInit {
         this.store.dispatch(userAdapter.patchOne({ ...firstItem, name: "modified name" }, (data) => {
             console.log('data updated', data)
         }, (error) => {
-            console.error('data ERROR')
+            console.error('data ERROR', error)
         }));
     }
 

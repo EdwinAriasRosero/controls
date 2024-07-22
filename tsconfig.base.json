@@ -17,6 +17,9 @@
     "paths": {
       "@ea-controls/layout": ["libs/layout/src/index.ts"],
       "@ea-controls/ngrx-repository": ["libs/ngrx/repository/src/index.ts"],
+      "@ea-controls/ngrx-repository-pouchdb": [
+        "libs/ngrx/repository-pouchdb/src/index.ts"
+      ],
       "@ea-controls/ngrx-repository-webapi": [
         "libs/ngrx/repository-webapi/src/index.ts"
       ],

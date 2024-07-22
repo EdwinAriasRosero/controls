@@ -97,7 +97,7 @@ export class WebApiEffect {
                             return actionInfo.actions.addOne({ data: currentData });
                         }),
                         catchError((error) => {
-                            (<any>action).onFail && (<any>action).onFail(error);
+                            (<any>action).onFail ? (<any>action).onFail(error) : console.error(error);
                             return of(actionInfo!.actions.errorAddOne({ error }));
                         })
                     );
@@ -121,7 +121,7 @@ export class WebApiEffect {
                                 return actionInfo.actions.patchOne({ data: currentData });
                             }),
                             catchError((error) => {
-                                (<any>action).onFail && (<any>action).onFail(error);
+                                (<any>action).onFail ? (<any>action).onFail(error) : console.error(error);
                                 return of(actionInfo!.actions.errorPatchOne({ error }));
                             })
                         );
@@ -133,7 +133,7 @@ export class WebApiEffect {
                                 return actionInfo.actions.patchOne({ data: currentData });
                             }),
                             catchError((error) => {
-                                (<any>action).onFail && (<any>action).onFail(error);
+                                (<any>action).onFail ? (<any>action).onFail(error) : console.error(error);
                                 return of(actionInfo!.actions.errorPatchOne({ error }));
                             })
                         );
@@ -157,7 +157,7 @@ export class WebApiEffect {
                             return actionInfo.actions.removeOne({ data: currentData });
                         }),
                         catchError((error) => {
-                            (<any>action).onFail && (<any>action).onFail(error);
+                            (<any>action).onFail ? (<any>action).onFail(error) : console.error(error);
                             return of(actionInfo!.actions.errorRemoveOne({ error }));
                         })
                     );
@@ -179,7 +179,7 @@ export class WebApiEffect {
                             return actionInfo.actions.removeById({ id: data });
                         }),
                         catchError((error) => {
-                            (<any>action).onFail && (<any>action).onFail(error);
+                            (<any>action).onFail ? (<any>action).onFail(error) : console.error(error);
                             return of(actionInfo!.actions.errorRemoveById({ error }));
                         })
                     );
