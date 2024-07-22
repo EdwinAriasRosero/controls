@@ -45,7 +45,10 @@ export const appConfig: ApplicationConfig = {
   providers: [
     ...
     provideStore(),
-    provideState(userAdapter.reducer())
+    provideState(userAdapter.reducer(
+        //add more reducer actions
+        //on(....)
+    ))
   ],
 };
 ```
@@ -113,15 +116,30 @@ export class App {
 
 ## Actions / Selectors
 
-| Action/Selector  | Description                                | Values         |
-|------------------|--------------------------------------------|----------------|
-| addOne(...)      | Add a new item to the collection           | Entity object  |
-| removeOne(...)   | Remove an item from the collection          | Entity object  |
-| patchOne(...)    | Update an object in the collection          | Entity object  |
-| setAll([...])    | Replace the entire collection with new data | Entity array   |
-| removeById(id)   | Remove an item from the collection by ID    | string         |
-| feature()        | Default selector, returns entire collection | -              |
-| selectById(id)   | Selects an item from collection by ID       | string         |
+| Action/Selector  | Description                                 | Values         |
+|------------------|---------------------------------------------|----------------|
+| addOne(...)      | Add a new item to the collection            | Entity object / onSuccess? / onFail? |
+| removeOne(...)   | Remove an item from the collection          | Entity object / onSuccess? / onFail? |
+| patchOne(...)    | Update an object in the collection          | Entity object / onSuccess? / onFail? |
+| setAll([...])    | Replace the entire collection with new data | Entity array                         |
+| removeById(id)   | Remove an item from the collection by ID    | string / onSuccess? / onFail?        |
+| feature()        | Default selector, returns entire collection | -                                    |
+| selectById(id)   | Selects an item from collection by ID       | string                               |
+
+## OnSuccess/onFail
+
+Some actions receive extra callback info that allows you to run a statement when success/fail action
+
+Imagine you can remove an item, and after it is removed you can do something else. For doing this you can follow next approach
+
+>Note: By default those callbacks are disabled, but if you extends this library you can give them a new behavior usgin `before actions`
+
+```typescript
+this.store.dispatch({...} as UserEntity, 
+    (data) => { console.log('success operation', data); }, 
+    (error) => { console.error('Error while removing', error) }
+)
+```
 
 ### Customize ID Calculation
 
@@ -159,8 +177,29 @@ export class AdapterExtensionEffect {
             exhaustMap(action => {
                 return this.httpClient.get<any>('http://myUrl.com/users')
                     .pipe(
-                        map((response) => userAdapter._setAll({ data: response })),
+                        map((response) => userAdapter.setAll(response)),
+                        //map((response) => userAdapter.actions.setAll({ data: response })),
                         catchError((error) => of(userAdapter._erroGetAll({ error })))
+                    );
+
+            }))
+
+    });
+
+    save$ = createEffect(() => {
+
+        return this.actions$.pipe(
+            ofType(userAdapter.actions.beforeAddOne.type),
+            exhaustMap(action => {
+                return this.httpClient.post<any>('http://myUrl.com/users', action.data)
+                    .pipe(
+                        tap(response => {
+                            //Using onSuccess/onFail actions
+                            action.onSuccess && action.onSuccess(action.data);
+                        })
+                        map(response => userAdapter.addOne(response)),
+                        //map((response) => userAdapter.actions.addOne({ data: response })),
+                        catchError((error) => of(userAdapter._erroAddOne({ error })))
                     );
 
             }))

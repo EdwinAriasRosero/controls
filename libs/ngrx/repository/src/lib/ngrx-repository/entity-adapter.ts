@@ -1,80 +1,87 @@
-import { Action, createAction, createFeatureSelector, createReducer, createSelector, MemoizedSelector, on, props } from "@ngrx/store";
+import {
+    Action, ActionCreator, createAction, createFeatureSelector,
+    createReducer, createSelector, MemoizedSelector, on, props, ReducerTypes
+} from "@ngrx/store";
 
 export class EntityAdapter<T> {
 
     public feature: MemoizedSelector<object, T[]>;
     public initialState: T[] = [];
+    public launchBeforeActions: boolean = false;
 
-    _getAll = createAction(`[${this.name}] repository get all`);
-    _addOne = createAction(`[${this.name}] repository add`, props<{ data: T }>());
-    _patchOne = createAction(`[${this.name}] repository patch`, props<{ data: T }>());
-    _removeOne = createAction(`[${this.name}] repository remove`, props<{ data: T }>());
-    _removeById = createAction(`[${this.name}] repository removeById`, props<{ id: string }>());
+    public actions = {
+        getAll: createAction(`[${this.name}] repository get all`),
+        addOne: createAction(`[${this.name}] repository add`, props<{ data: T }>()),
+        patchOne: createAction(`[${this.name}] repository patch`, props<{ data: T }>()),
+        removeOne: createAction(`[${this.name}] repository remove`, props<{ data: T }>()),
+        removeById: createAction(`[${this.name}] repository removeById`, props<{ id: string }>()),
+        setAll: createAction(`[${this.name}] repository set all`, props<{ data: T[] }>()),
 
-    _setAll = createAction(`[${this.name}] repository set all`, props<{ data: T[] }>());
-    _beforeAddOne = createAction(`[${this.name}] repository before add`, props<{ data: T }>());
-    _beforePatchOne = createAction(`[${this.name}] repository before patch`, props<{ data: T }>());
-    _beforeRemoveOne = createAction(`[${this.name}] repository before remove`, props<{ data: T }>());
-    _beforeRemoveById = createAction(`[${this.name}] repository before removeById`, props<{ id: string }>());
+        beforeAddOne: createAction(`[${this.name}] repository before adding`, props<{ data: T, onSuccess?: (data: T) => void, onFail?: (data: T) => void }>()),
+        beforePatchOne: createAction(`[${this.name}] repository before patching`, props<{ data: T, onSuccess?: (data: T) => void, onFail?: (data: T) => void }>()),
+        beforeRemoveOne: createAction(`[${this.name}] repository before removing`, props<{ data: T, onSuccess?: (data: T) => void, onFail?: (data: T) => void }>()),
+        beforeRemoveById: createAction(`[${this.name}] repository before removeById`, props<{ id: string, onSuccess?: (data: T) => void, onFail?: (data: T) => void }>()),
 
-    _erroGetAll = createAction(`[${this.name}] repository error get all`, props<{ error: string }>());
-    _errorAddOne = createAction(`[${this.name}] repository error add`, props<{ error: string }>());
-    _errorPatchOne = createAction(`[${this.name}] repository error patch`, props<{ error: string }>());
-    _errorRemoveOne = createAction(`[${this.name}] repository error remove`, props<{ error: string }>());
-    _errorRemoveById = createAction(`[${this.name}] repository error removeById`, props<{ error: string }>());
-
-
-    launchBeforeActions: boolean = false;
+        erroGetAll: createAction(`[${this.name}] repository error getting all`, props<{ error: string }>()),
+        errorAddOne: createAction(`[${this.name}] repository error adding`, props<{ error: string }>()),
+        errorPatchOne: createAction(`[${this.name}] repository error patching`, props<{ error: string }>()),
+        errorRemoveOne: createAction(`[${this.name}] repository error removing`, props<{ error: string }>()),
+        errorRemoveById: createAction(`[${this.name}] repository error removeById`, props<{ error: string }>()),
+    };
 
     constructor(public name: string,
-        private getId?: (input: T) => string) {
+        public getId: (input: T) => string = (input: T) => (<any>input).id) {
 
         this.feature = createFeatureSelector<T[]>(this.name);
     }
 
-
-    selectById = (id: string) => createSelector(this.feature, (items) => {
-        return items.find(i => this.getId ? this.getId(i) === id : (<any>i).id === id)
-    });
-
-    public reducer() {
+    public reducer(...ons: ReducerTypes<T[], readonly ActionCreator[]>[]) {
         const reducer = createReducer(
             this.initialState,
-            on(this._setAll, (state, { data }) => data),
-            on(this._addOne, (state, { data }) => ([...state, data])),
-            on(this._removeOne, (state, { data }) => state.filter(d => d !== data)),
-            on(this._patchOne, (state, { data }) => state.map(d => d === data ? data : d)),
-            on(this._removeById, (state, { id }) => state.filter(d => (<any>d).id !== id)),
+            on(this.actions.setAll, (state, { data }) => data),
+            on(this.actions.addOne, (state, { data }) => ([...state, data])),
+            on(this.actions.removeOne, (state, { data }) => state.filter(d => this.getId(d).toString() !== this.getId(data).toString())),
+            on(this.actions.patchOne, (state, { data }) => state.map(d => this.getId(d).toString() === this.getId(data).toString() ? data : d)),
+            on(this.actions.removeById, (state, { id }) => state.filter(d => this.getId(d).toString() !== id.toString())),
+            ...ons
         );
 
         return { name: this.name, reducer: reducer };
     }
 
+    selectById = (id: string) => createSelector(this.feature, (items) => {
+        return items.find(i => this.getId(i) === id)
+    });
+
     getAll() {
-        return this._getAll();
+        return this.actions.getAll();
     }
 
-    addOne(entity: T) {
-        return this.launchBeforeActions
-            ? this._beforeAddOne({ data: entity })
-            : this._addOne({ data: entity });
+    setAll(entities: T[]) {
+        return this.actions.setAll({ data: entities });
     }
 
-    removeOne(entity: T) {
+    addOne(entity: T, onSuccess?: (data: T) => void, onFail?: (data: T) => void) {
         return this.launchBeforeActions
-            ? this._beforeRemoveOne({ data: entity })
-            : this._removeOne({ data: entity });
+            ? this.actions.beforeAddOne({ data: entity, onSuccess, onFail })
+            : this.actions.addOne({ data: entity });
     }
 
-    patchOne(entity: T) {
+    removeOne(entity: T, onSuccess?: (data: T) => void, onFail?: (data: T) => void) {
         return this.launchBeforeActions
-            ? this._beforePatchOne({ data: entity })
-            : this._patchOne({ data: entity });
+            ? this.actions.beforeRemoveOne({ data: entity, onSuccess, onFail })
+            : this.actions.removeOne({ data: entity });
     }
 
-    removeByIdOne(entity: string) {
+    patchOne(entity: T, onSuccess?: (data: T) => void, onFail?: (data: T) => void) {
         return this.launchBeforeActions
-            ? this._beforeRemoveById({ id: entity })
-            : this._removeById({ id: entity });
+            ? this.actions.beforePatchOne({ data: entity, onSuccess, onFail })
+            : this.actions.patchOne({ data: entity });
+    }
+
+    removeByIdOne(entity: string, onSuccess?: (data: T) => void, onFail?: (data: T) => void) {
+        return this.launchBeforeActions
+            ? this.actions.beforeRemoveById({ id: entity, onSuccess, onFail })
+            : this.actions.removeById({ id: entity });
     }
 }

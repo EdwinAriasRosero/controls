@@ -9,19 +9,28 @@ import { provideHttpClient } from '@angular/common/http';
 import { EntityAdapter } from '@ea-controls/ngrx-repository';
 import { UserEntity } from './repository/repository.component';
 
-export const userAdapter = new EntityAdapter<UserEntity>("items");
+export const userAdapter = new EntityAdapter<UserEntity>("items", input => input.userId);
 
 WebApiEffectRegister.register(userAdapter);
 WebApiEffectRegister.configure({
   urlBase: `http://localhost:3000`,
-  tranformGetResponse: (data: any, action: string) => {
-    console.log(action, data);
-    return data;
-  },
-  getId: (data: any) => {
-    console.log('id invoked', data);
+  tranformResponse: (data: any[], action: EntityAdapter<any>) => {
+    var newData = data.map(d => ({
+      ...d,
+      userId: d.id
+    }));
 
-    return data.id;
+    newData.forEach(v => delete v["id"]);
+
+    console.log(newData);
+    return newData;
+  },
+  tranformBeforeSendingData: (data: any, action: EntityAdapter<any>) => {
+    let newData = { ...data, id: data.userId };
+    delete newData["userId"]
+
+    console.log(newData);
+    return newData;
   }
 });
 

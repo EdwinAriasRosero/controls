@@ -63,28 +63,10 @@ Configure `@ea-controls/ngrx-repository-webapi` for flexible data transformation
 | Option                  | Description                                          | Input                                   | Output                         |
 |-------------------------|------------------------------------------------------|-----------------------------------------|--------------------------------|
 | urlBase                 | Base URL for all API requests                        | -                                       | -                              |
-| transformGetResponse    | Transform data before updating the ngrx model        | data returned by httpClient.get method   | Processed data by user         |
-| transformPostData       | Modify data before making httpClient.post request     | data sent in ngrx action                | Processed data by user         |
-| transformPatchData      | Modify data before making httpClient.patch request    | data sent in ngrx action                | Processed data by user         |
-| transformRemoveData     | Modify data before making httpClient.delete request   | data sent in ngrx action                | Processed data by user         |
-| getId                   | Calculate ID used in delete/patch and other operations| data sent in ngrx action                | New ID (string)                |
-| getUrl                  | URL used in httpClient.get method                    | Current adapter name                    | URL string (default `${urlBase}/${adapterName}`) |
-| postUrl                 | URL used in httpClient.post method                   | Current adapter name                    | URL string (default `${urlBase}/${adapterName}`) |
-| patchUrl                | URL used in httpClient.patch method                  | Current adapter name, ID                | URL string (default `${urlBase}/${adapterName}/${id}`) |
-| removeUrl               | URL used in httpClient.delete method                 | Current adapter name, ID                | URL string (default `${urlBase}/${adapterName}/${id}`) |
-
-### Customize ID Calculation
-
-You can customize the ID calculation when creating the `EntityAdapter`. Use the following approach:
-
-```typescript
-import { EntityAdapter } from '@ea-controls/ngrx-repository';
-
-export const userAdapter = new EntityAdapter<UserEntity>("users", (item) => `${item.id}.${item.name}`);
-```
-
->Note: The default ID calculation uses `item.id`.
-
-## Additional Information
-
-Explore additional packages that extend this approach, enabling integration with different databases or APIs for data management.
+| transformResponse       | Transform data before updating the ngrx model        | data returned by httpClient.get method   | Processed data by user         |
+| tranformBeforeSendingData       | Modify data before making httpClient.[post/patch/delete] request     | data sent in ngrx action                | Processed data by user         |
+| getUrl                  | URL used in httpClient.get method                    | Current EntityAdapter                   | URL string (default `${urlBase}/${adapterName}`) |
+| postUrl                 | URL used in httpClient.post method                   | Current EntityAdapter and data          | URL string (default `${urlBase}/${adapterName}`) |
+| patchUrl                | URL used in httpClient.patch method                  | Current EntityAdapter and data          | URL string (default `${urlBase}/${adapterName}/${id}`) |
+| removeUrl               | URL used in httpClient.delete method                 | Current EntityAdapter and data          | URL string (default `${urlBase}/${adapterName}/${id}`) |
+| updateWithPatch         | If update should be patch or put verb                | true/false                              | - |

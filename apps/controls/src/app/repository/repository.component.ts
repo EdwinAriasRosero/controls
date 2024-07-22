@@ -5,7 +5,7 @@ import { userAdapter } from "../app.config";
 
 
 export interface UserEntity {
-    id: string;
+    userId: string;
     name: string;
     description: string;
     status: string;
@@ -17,6 +17,7 @@ export interface UserEntity {
     template: `
     <button (click)="add()">Add</button>
     <button (click)="delete()">delete First</button>
+    <button (click)="update()">update First name</button>
 
     <div style="border: solid thin blue;">
         {{ selected() | json }}
@@ -37,7 +38,6 @@ export class RepositoryComponentWrap implements OnInit {
 
     data = signal<UserEntity[]>([]);
     selected = signal<UserEntity | undefined>(undefined);
-    static id: number = 0;
 
     constructor(private store: Store) { }
 
@@ -50,14 +50,23 @@ export class RepositoryComponentWrap implements OnInit {
     }
 
     add() {
-        RepositoryComponentWrap.id = this.data().length;
+        let maxId = 1 + Math.max(...this.data().map(d => Number(d.userId)));
+
         this.store.dispatch(userAdapter.addOne({
-            id: `${RepositoryComponentWrap.id}`,
+            userId: maxId.toString(),
             name: `Edwin`,
             description: "test",
             status: "active"
-        }
-        ))
+        }))
+    }
+
+    update() {
+        let firstItem = this.data()[0];
+        this.store.dispatch(userAdapter.patchOne({ ...firstItem, name: "modified name" }, (data) => {
+            console.log('data updated', data)
+        }, (error) => {
+            console.error('data ERROR')
+        }));
     }
 
     delete() {
