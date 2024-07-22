@@ -2,9 +2,9 @@
 
 Extend `@ea-controls/ngrx-repository` for using local pouchdb database storage in localStorage.
 
-[ngrx official documentation](https://www.npmjs.com/package/@ea-controls/ngrx-repository)
+[ngrx official documentation](https://ngrx.io/)
 
-[@ea-controls/ngrx-repository](https://link-to-your-package)
+[@ea-controls/ngrx-repository](https://www.npmjs.com/package/@ea-controls/ngrx-repository)
 
 [pouchDb](https://pouchdb.com/)
 

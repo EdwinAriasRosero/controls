@@ -4,7 +4,7 @@ Extend `@ea-controls/ngrx-repository` to make API calls using the same adapter a
 
 [ngrx official documentation](https://ngrx.io/)
 
-[@ea-controls/ngrx-repository](https://link-to-your-package)
+[@ea-controls/ngrx-repository](https://www.npmjs.com/package/@ea-controls/ngrx-repository)
 
 ## Installation
 
