@@ -1,8 +1,8 @@
 # repository-pouchDb
 
-Extend `@ea-controls/ngrx-repository` to make API calls using the same adapter action calls.
+Extend `@ea-controls/ngrx-repository` for using local pouchdb database storage in localStorage.
 
-[ngrx official documentation](https://ngrx.io/)
+[ngrx official documentation](https://www.npmjs.com/package/@ea-controls/ngrx-repository)
 
 [@ea-controls/ngrx-repository](https://link-to-your-package)
 
@@ -60,7 +60,7 @@ export class RepositoryComponentWrap implements OnInit {
 
 ## PouchDbEffectRegister Options
 
-Configure `@ea-controls/ngrx-repository-poouchdb` for flexible data transformation and URL formats.
+Configure `@ea-controls/ngrx-repository-pouchdb` for flexible data transformation and URL formats.
 
 | Option                  | Description                                          | Input                                   | Output                         |
 |-------------------------|------------------------------------------------------|-----------------------------------------|--------------------------------|
