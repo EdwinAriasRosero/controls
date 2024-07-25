@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { switchMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import { Actions, ofType, createEffect, } from '@ngrx/effects';
 import { EntityAdapter } from "@ea-controls/ngrx-repository";
 import { EMPTY } from 'rxjs';
@@ -51,7 +51,7 @@ export class PouchDbEffect {
 
         return this.actions$.pipe(
             ofType(...PouchDbEffectRegister.entityList.map(x => x.actions.getAll.type)),
-            switchMap(async (action) => {
+            mergeMap(async (action) => {
                 const actionInfo = PouchDbEffectRegister.entityList.find(u => u.actions.getAll.type === action.type)!;
 
                 try {
@@ -85,7 +85,7 @@ export class PouchDbEffect {
     ) => {
         return this.actions$.pipe(
             ofType(...PouchDbEffectRegister.entityList.map(x => invokerAction(x))),
-            switchMap(async (action) => {
+            mergeMap(async (action) => {
                 const actionAdapter = PouchDbEffectRegister.entityList.find(u => invokerAction(u) === action.type)!;
 
                 try {

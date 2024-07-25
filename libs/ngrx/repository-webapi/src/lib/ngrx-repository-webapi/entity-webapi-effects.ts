@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import { Actions, ofType, createEffect, } from '@ngrx/effects';
 import { HttpClient } from '@angular/common/http';
 import { EntityAdapter } from "@ea-controls/ngrx-repository";
@@ -64,7 +64,7 @@ export class WebApiEffect {
     get$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(...WebApiEffectRegister.entityList.map(x => x.actions.getAll.type)),
-            switchMap((action) => {
+            mergeMap((action) => {
                 const actionInfo = WebApiEffectRegister.entityList.find(u => u.actions.getAll.type === action.type)!;
 
                 return this.httpClient
@@ -89,7 +89,7 @@ export class WebApiEffect {
 
         return this.actions$.pipe(
             ofType(...WebApiEffectRegister.entityList.map(x => invokerAction(x))),
-            switchMap(action => {
+            mergeMap(action => {
 
                 const actionAdapter = WebApiEffectRegister.entityList.find(u => invokerAction(u) === action.type)!;
                 const currentData = (<any>action).data;
