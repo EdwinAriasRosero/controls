@@ -6,7 +6,7 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideEffects } from '@ngrx/effects';
 import { provideHttpClient } from '@angular/common/http';
 import { ConfigureWebApiRepository, getWebApiEffects, userAdapter } from './repository/repository-webapi.component';
-import { ConfigurePouchDbRepository, getPouchDbEffects, userAdapterPouchDb } from './repository/repository-pouchdb.component';
+import { ConfigurePouchDbRepository, getPouchDbEffects, roleAdapterPouchDb, userAdapterPouchDb } from './repository/repository-pouchdb.component';
 
 ConfigureWebApiRepository();
 ConfigurePouchDbRepository();
@@ -18,6 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideStore(),
     provideState(userAdapter.reducer()),
+    provideState(roleAdapterPouchDb.reducer()),
     provideState(userAdapterPouchDb.reducer()),
     provideEffects(getWebApiEffects(), getPouchDbEffects()),
     provideStoreDevtools({

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { exhaustMap, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { Actions, ofType, createEffect, } from '@ngrx/effects';
 import { EntityAdapter } from "@ea-controls/ngrx-repository";
 import { EMPTY } from 'rxjs';
@@ -51,7 +51,7 @@ export class PouchDbEffect {
 
         return this.actions$.pipe(
             ofType(...PouchDbEffectRegister.entityList.map(x => x.actions.getAll.type)),
-            exhaustMap(async (action) => {
+            switchMap(async (action) => {
                 const actionInfo = PouchDbEffectRegister.entityList.find(u => u.actions.getAll.type === action.type)!;
 
                 try {
@@ -77,112 +77,99 @@ export class PouchDbEffect {
             }))
     });
 
-    add$ = createEffect(() => {
+    executeAction$ = (
+        invokerAction: (adapter: EntityAdapter<any>) => string,
+        pocuhDbAction: (adapter: EntityAdapter<any>, currentData: any, transformedData: any) => Promise<boolean>,
+        successAction: (adapter: EntityAdapter<any>, currentData: any, transformedData: any) => any,
+        failAction: (adapter: EntityAdapter<any>, error: any) => any
+    ) => {
         return this.actions$.pipe(
-            ofType(...PouchDbEffectRegister.entityList.map(x => x.actions.beforeAddOne.type)),
-            exhaustMap(async (action) => {
-
-                const actionInfo = PouchDbEffectRegister.entityList.find(u => u.actions.beforeAddOne.type === action.type)!;
-                const currentData = (<any>action).data;
+            ofType(...PouchDbEffectRegister.entityList.map(x => invokerAction(x))),
+            switchMap(async (action) => {
+                const actionAdapter = PouchDbEffectRegister.entityList.find(u => invokerAction(u) === action.type)!;
 
                 try {
-                    const cloneItem = { ...structuredClone((<any>action).data), _id: (<any>action).data[PouchDbEffectRegister.options.idField!] };
-                    await PouchDbEffectRegister.getDb(actionInfo).put(cloneItem);
+                    const currentData = (<any>action).data;
+                    const transformedData = { ...structuredClone((<any>action).data), _id: (<any>action).data[PouchDbEffectRegister.options.idField!] };
+                    const result = await pocuhDbAction(actionAdapter, currentData, transformedData);
 
-                    (<any>action).onSuccess && (<any>action).onSuccess(currentData);
-                    return actionInfo.actions.addOne({ data: currentData });
+                    if (result) {
+                        (<any>action).onSuccess && (<any>action).onSuccess(currentData);
+                        return successAction(actionAdapter, currentData, transformedData);
+                    }
+
+                    return EMPTY;
 
                 } catch (error: any) {
                     (<any>action).onFail ? (<any>action).onFail(error) : console.error(error);
-                    return actionInfo!.actions.errorAddOne({ error });
+                    return failAction(actionAdapter, error);
                 }
             }))
+    }
+
+    add$ = createEffect(() => {
+        return this.executeAction$(
+            adapter => adapter.actions.beforeAddOne.type,
+            async (adapter, currentData, transformedData) => { await PouchDbEffectRegister.getDb(adapter).put(transformedData); return true; },
+            (adapter, currentData) => adapter.actions.addOne({ data: currentData }),
+            (adapter, error) => adapter.actions.errorAddOne({ error })
+        );
     });
 
     patch$ = createEffect((): any => {
-        return this.actions$.pipe(
-            ofType(...PouchDbEffectRegister.entityList.map(x => x.actions.beforePatchOne.type)),
-            exhaustMap(async (action) => {
+        return this.executeAction$(
+            adapter => adapter.actions.beforePatchOne.type,
+            async (adapter, currentData, transformedData) => {
+                const db = PouchDbEffectRegister.getDb(adapter);
+                const doc = await db.get(transformedData._id);
 
-                const actionInfo = PouchDbEffectRegister.entityList.find(u => u.actions.beforePatchOne.type === action.type)!;
-                const currentData = (<any>action).data;
-                const cloneItem = { ...structuredClone((<any>action).data), _id: (<any>action).data[PouchDbEffectRegister.options.idField!] };
-
-                try {
-                    let doc = await PouchDbEffectRegister.getDb(actionInfo).get(cloneItem._id);
-
-                    if (doc) {
-
-                        const newDoc = { ...doc, ...currentData };
-                        await PouchDbEffectRegister.getDb(actionInfo).put(newDoc);
-
-                        (<any>action).onSuccess && (<any>action).onSuccess(currentData);
-                        return actionInfo.actions.patchOne({ data: currentData });
-                    } else {
-                        return EMPTY;
-                    }
-
-                } catch (error: any) {
-                    (<any>action).onFail ? (<any>action).onFail(error) : console.error(error);
-                    return actionInfo!.actions.errorPatchOne({ error });
+                if (doc) {
+                    const newDoc = { ...doc, ...currentData };
+                    await db.put(newDoc);
+                    return true;
+                } else {
+                    return false;
                 }
-            }))
+            },
+            (adapter, currentData) => adapter.actions.patchOne({ data: currentData }),
+            (adapter, error) => adapter.actions.errorPatchOne({ error })
+        );
     });
 
     remove$ = createEffect((): any => {
-        return this.actions$.pipe(
-            ofType(...PouchDbEffectRegister.entityList.map(x => x.actions.beforeRemoveOne.type)),
-            exhaustMap(async (action) => {
+        return this.executeAction$(
+            adapter => adapter.actions.beforeRemoveOne.type,
+            async (adapter, currentData, transformedData) => {
+                const db = PouchDbEffectRegister.getDb(adapter);
+                const doc = await db.get(transformedData._id);
 
-                const actionInfo = PouchDbEffectRegister.entityList.find(u => u.actions.beforeRemoveOne.type === action.type)!;
-                const currentData = (<any>action).data;
-                const cloneItem = { ...structuredClone((<any>action).data), _id: (<any>action).data[PouchDbEffectRegister.options.idField!] };
-
-                try {
-                    let doc = await PouchDbEffectRegister.getDb(actionInfo).get(cloneItem._id);
-
-                    if (doc) {
-                        await PouchDbEffectRegister.getDb(actionInfo).remove(doc._id, doc._rev);
-
-                        (<any>action).onSuccess && (<any>action).onSuccess(currentData);
-                        return actionInfo.actions.removeOne({ data: currentData });
-                    } else {
-                        return EMPTY;
-                    }
-
+                if (doc) {
+                    await db.remove(doc._id, doc._rev);
+                    return true;
+                } else {
+                    return false;
                 }
-                catch (error: any) {
-                    (<any>action).onFail ? (<any>action).onFail(error) : console.error(error);
-                    return actionInfo!.actions.errorRemoveOne({ error });
-                }
-            }))
+            },
+            (adapter, currentData) => adapter.actions.removeOne({ data: currentData }),
+            (adapter, error) => adapter.actions.errorRemoveOne({ error })
+        );
     });
 
     removeById$ = createEffect((): any => {
-        return this.actions$.pipe(
-            ofType(...PouchDbEffectRegister.entityList.map(x => x.actions.beforeRemoveById.type)),
-            switchMap(async (action) => {
+        return this.executeAction$(
+            adapter => adapter.actions.beforeRemoveById.type,
+            async (adapter, currentData, transformedData) => {
+                let doc = await PouchDbEffectRegister.getDb(adapter).get(transformedData._id);
 
-                const actionInfo = PouchDbEffectRegister.entityList.find(u => u.actions.beforeRemoveById.type === action.type)!;
-                const data = (<any>action).id;
-
-                try {
-                    let doc = await PouchDbEffectRegister.getDb(actionInfo).get(data);
-
-                    if (doc) {
-                        await PouchDbEffectRegister.getDb(actionInfo).remove(doc._id, doc._rev);
-
-                        (<any>action).onSuccess && (<any>action).onSuccess(data);
-                        return actionInfo.actions.removeById({ id: data });
-                    } else {
-                        return EMPTY;
-                    }
-
+                if (doc) {
+                    await PouchDbEffectRegister.getDb(adapter).remove(doc._id, doc._rev);
+                    return true;
+                } else {
+                    return false;
                 }
-                catch (error: any) {
-                    (<any>action).onFail ? (<any>action).onFail(error) : console.error(error);
-                    return actionInfo!.actions.errorRemoveById({ error });
-                }
-            }))
+            },
+            (adapter, currentData) => adapter.actions.removeById({ id: currentData }),
+            (adapter, error) => adapter.actions.errorRemoveById({ error })
+        );
     });
 }

@@ -13,13 +13,12 @@ Check out the demo on StackBlitz: [Demo](https://stackblitz.com/edit/stackblitz-
 ## Installation
 
 ```bash
-npm i @ngrx/store@latest
 npm i @ea-controls/ngrx-repository@latest
 ```
 
 ## Configuration
 
-Create an interface or class for your data structure:
+Create an interface or class for your data structure (You can create a new user.adapter.ts and do it there):
 
 ```typescript
 export interface UserEntity {
@@ -41,6 +40,8 @@ export const userAdapter = new EntityAdapter<UserEntity>("users");
 Register your adapters in the module:
 
 ```typescript
+import { provideStore, provideState } from '@ngrx/store';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     ...
@@ -48,7 +49,8 @@ export const appConfig: ApplicationConfig = {
     provideState(userAdapter.reducer(
         //add more reducer actions
         //on(....)
-    ))
+    )),
+    provideState(userAdapter.reducer()) // <-- If there are not reducer actions you can take this approach
   ],
 };
 ```
@@ -174,7 +176,7 @@ export class AdapterExtensionEffect {
 
         return this.actions$.pipe(
             ofType(userAdapter.getAll().type),
-            exhaustMap(action => {
+            switchMap(action => {
                 return this.httpClient.get<any>('http://myUrl.com/users')
                     .pipe(
                         map((response) => userAdapter.setAll(response)),
@@ -190,7 +192,7 @@ export class AdapterExtensionEffect {
 
         return this.actions$.pipe(
             ofType(userAdapter.actions.beforeAddOne.type),
-            exhaustMap(action => {
+            switchMap(action => {
                 return this.httpClient.post<any>('http://myUrl.com/users', action.data)
                     .pipe(
                         tap(response => {

@@ -11,8 +11,6 @@ Extend `@ea-controls/ngrx-repository` for using local pouchdb database storage i
 ## Installation
 
 ```bash
-npm i @ngrx/store@latest
-npm i @ea-controls/ngrx-repository@latest
 npm i @ea-controls/ngrx-repository-pouchdb@latest
 ```
 
@@ -20,8 +18,12 @@ npm i @ea-controls/ngrx-repository-pouchdb@latest
 
 Follow the same configuration steps as `@ea-controls/ngrx-repository`. Afterward, configure the web API effects:
 
+Register in app.config.ts (standalone components) the following code
+
 ```typescript
-import { PouchDbEffect, PouchDbEffectRegister } from "@ea-controls/ngrx-repository-webapi";
+import { PouchDbEffect, PouchDbEffectRegister } from "@ea-controls/ngrx-repository-pouchdb";
+import { provideEffects } from '@ngrx/effects';
+import { EntityAdapter } from "@ea-controls/ngrx-repository";
 
 export const userAdapter = new EntityAdapter<UserEntity>("items");
 

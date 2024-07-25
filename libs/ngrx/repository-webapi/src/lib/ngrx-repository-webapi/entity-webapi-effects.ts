@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { catchError, exhaustMap, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { Actions, ofType, createEffect, } from '@ngrx/effects';
 import { HttpClient } from '@angular/common/http';
 import { EntityAdapter } from "@ea-controls/ngrx-repository";
-import { of } from 'rxjs';
-
+import { Observable, of } from 'rxjs';
 
 export interface WebApiEffectRegisterSettings {
     urlBase?: string;
@@ -65,7 +64,7 @@ export class WebApiEffect {
     get$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(...WebApiEffectRegister.entityList.map(x => x.actions.getAll.type)),
-            exhaustMap((action) => {
+            switchMap((action) => {
                 const actionInfo = WebApiEffectRegister.entityList.find(u => u.actions.getAll.type === action.type)!;
 
                 return this.httpClient
@@ -81,108 +80,72 @@ export class WebApiEffect {
             }))
     });
 
-    add$ = createEffect(() => {
+    makeRequest$ = (
+        invokerAction: (adapter: EntityAdapter<any>) => string,
+        httpMethodInvoker: (adapter: EntityAdapter<any>, currentData: any, transformedData: any) => Observable<Object>,
+        successAction: (adapter: EntityAdapter<any>, currentData: any, transformedData: any) => any,
+        failAction: (adapter: EntityAdapter<any>, error: any) => any
+    ) => {
+
         return this.actions$.pipe(
-            ofType(...WebApiEffectRegister.entityList.map(x => x.actions.beforeAddOne.type)),
+            ofType(...WebApiEffectRegister.entityList.map(x => invokerAction(x))),
             switchMap(action => {
 
-                const actionInfo = WebApiEffectRegister.entityList.find(u => u.actions.beforeAddOne.type === action.type)!;
+                const actionAdapter = WebApiEffectRegister.entityList.find(u => invokerAction(u) === action.type)!;
                 const currentData = (<any>action).data;
-                const data = WebApiEffectRegister.options.tranformBeforeSendingData!(currentData, actionInfo);
+                const transformedData = WebApiEffectRegister.options.tranformBeforeSendingData!(currentData, actionAdapter);
 
-                return this.httpClient.post(WebApiEffectRegister.options.postUrl!(actionInfo, currentData), data)
+                return httpMethodInvoker(actionAdapter, currentData, transformedData)
                     .pipe(
                         map(() => {
                             (<any>action).onSuccess && (<any>action).onSuccess(currentData);
-                            return actionInfo.actions.addOne({ data: currentData });
+                            return successAction(actionAdapter, currentData, transformedData);
                         }),
                         catchError((error) => {
                             (<any>action).onFail ? (<any>action).onFail(error) : console.error(error);
-                            return of(actionInfo!.actions.errorAddOne({ error }));
+                            return of(failAction(actionAdapter, error));
                         })
                     );
             }))
+
+    }
+
+    add$ = createEffect(() => {
+        return this.makeRequest$(
+            adapter => adapter.actions.beforeAddOne.type,
+            (adapter, currentData, transformedData) => this.httpClient.post(WebApiEffectRegister.options.postUrl!(adapter, currentData), transformedData),
+            (adapter, currentData) => adapter.actions.addOne({ data: currentData }),
+            (adapter, error) => adapter.actions.errorAddOne({ error })
+        );
     });
 
     patch$ = createEffect(() => {
-        return this.actions$.pipe(
-            ofType(...WebApiEffectRegister.entityList.map(x => x.actions.beforePatchOne.type)),
-            switchMap(action => {
-
-                const actionInfo = WebApiEffectRegister.entityList.find(u => u.actions.beforePatchOne.type === action.type)!;
-                const currentData = (<any>action).data;
-                const data = WebApiEffectRegister.options.tranformBeforeSendingData!(currentData, actionInfo);
-
-                if (WebApiEffectRegister.options.updateWithPatch) {
-                    return this.httpClient.patch(WebApiEffectRegister.options.patchUrl!(actionInfo, currentData), data)
-                        .pipe(
-                            map(() => {
-                                (<any>action).onSuccess && (<any>action).onSuccess(currentData);
-                                return actionInfo.actions.patchOne({ data: currentData });
-                            }),
-                            catchError((error) => {
-                                (<any>action).onFail ? (<any>action).onFail(error) : console.error(error);
-                                return of(actionInfo!.actions.errorPatchOne({ error }));
-                            })
-                        );
-                } else {
-                    return this.httpClient.put(WebApiEffectRegister.options.patchUrl!(actionInfo, currentData), data)
-                        .pipe(
-                            map(() => {
-                                (<any>action).onSuccess && (<any>action).onSuccess(currentData);
-                                return actionInfo.actions.patchOne({ data: currentData });
-                            }),
-                            catchError((error) => {
-                                (<any>action).onFail ? (<any>action).onFail(error) : console.error(error);
-                                return of(actionInfo!.actions.errorPatchOne({ error }));
-                            })
-                        );
-                }
-            }))
+        return this.makeRequest$(
+            adapter => adapter.actions.beforePatchOne.type,
+            (adapter, currentData, transformedData) => {
+                const url = WebApiEffectRegister.options.patchUrl!(adapter, currentData);
+                return WebApiEffectRegister.options.updateWithPatch ? this.httpClient.patch(url, transformedData) : this.httpClient.put(url, transformedData);
+            },
+            (adapter, currentData) => adapter.actions.patchOne({ data: currentData }),
+            (adapter, error) => adapter.actions.errorPatchOne({ error })
+        );
     });
 
     remove$ = createEffect(() => {
-        return this.actions$.pipe(
-            ofType(...WebApiEffectRegister.entityList.map(x => x.actions.beforeRemoveOne.type)),
-            switchMap(action => {
-
-                const actionInfo = WebApiEffectRegister.entityList.find(u => u.actions.beforeRemoveOne.type === action.type)!;
-                const currentData = (<any>action).data;
-                //const data = WebApiEffectRegister.options.tranformBeforeSendingData!(currentData, actionInfo);
-
-                return this.httpClient.delete(WebApiEffectRegister.options.removeUrl!(actionInfo, currentData))
-                    .pipe(
-                        map(() => {
-                            (<any>action).onSuccess && (<any>action).onSuccess(currentData);
-                            return actionInfo.actions.removeOne({ data: currentData });
-                        }),
-                        catchError((error) => {
-                            (<any>action).onFail ? (<any>action).onFail(error) : console.error(error);
-                            return of(actionInfo!.actions.errorRemoveOne({ error }));
-                        })
-                    );
-            }))
+        return this.makeRequest$(
+            adapter => adapter.actions.beforeRemoveOne.type,
+            (adapter, currentData) => this.httpClient.delete(WebApiEffectRegister.options.removeUrl!(adapter, currentData)),
+            (adapter, currentData) => adapter.actions.removeOne({ data: currentData }),
+            (adapter, error) => adapter.actions.errorRemoveOne({ error })
+        );
     });
 
     removeById$ = createEffect(() => {
-        return this.actions$.pipe(
-            ofType(...WebApiEffectRegister.entityList.map(x => x.actions.beforeRemoveById.type)),
-            switchMap(action => {
-
-                const actionInfo = WebApiEffectRegister.entityList.find(u => u.actions.beforeRemoveById.type === action.type)!;
-                const data = (<any>action).id;
-
-                return this.httpClient.delete(WebApiEffectRegister.options.removeUrl!(actionInfo, { data }))
-                    .pipe(
-                        map(() => {
-                            (<any>action).onSuccess && (<any>action).onSuccess(data);
-                            return actionInfo.actions.removeById({ id: data });
-                        }),
-                        catchError((error) => {
-                            (<any>action).onFail ? (<any>action).onFail(error) : console.error(error);
-                            return of(actionInfo!.actions.errorRemoveById({ error }));
-                        })
-                    );
-            }))
+        return this.makeRequest$(
+            adapter => adapter.actions.beforeRemoveById.type,
+            (adapter, currentData) => this.httpClient.delete(WebApiEffectRegister.options.removeUrl!(adapter, currentData.id)),
+            (adapter, currentData) => adapter.actions.removeById({ id: currentData.id }),
+            (adapter, error) => adapter.actions.errorRemoveById({ error })
+        );
     });
 }

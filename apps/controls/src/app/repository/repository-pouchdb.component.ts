@@ -11,10 +11,20 @@ export interface UserEntity {
     status: string;
 }
 
-export const userAdapterPouchDb = new EntityAdapter<UserEntity>("itemsP", input => input.userId);
+
+export interface RoleEntity {
+    userId: string;
+    name: string;
+    description: string;
+    status: string;
+}
+
+export const userAdapterPouchDb = new EntityAdapter<UserEntity>("items", input => input.userId);
+export const roleAdapterPouchDb = new EntityAdapter<UserEntity>("roles", input => input.userId);
 
 export const ConfigurePouchDbRepository = () => {
     PouchDbEffectRegister.register(userAdapterPouchDb);
+    PouchDbEffectRegister.register(roleAdapterPouchDb);
     PouchDbEffectRegister.configure({
         idField: 'userId'
     });
@@ -57,6 +67,7 @@ export class RepositoryPouchDbComponent implements OnInit {
 
     ngOnInit(): void {
         this.store.dispatch(userAdapter.getAll());
+        this.store.dispatch(roleAdapterPouchDb.getAll());
 
         //You can use async pipe in html to avoid this
         this.store.select(userAdapter.feature).subscribe(data => this.data.set(data))
