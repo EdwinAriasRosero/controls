@@ -2,7 +2,7 @@ import { JsonPipe } from "@angular/common";
 import { Component, OnInit, signal } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { EntityAdapter } from "@ea-controls/ngrx-repository";
-import { WebApiEffect, WebApiEffectRegister } from "@ea-controls/ngrx-repository-webapi";
+import { provideRepositoryWebApi } from "@ea-controls/ngrx-repository-webapi";
 
 
 export interface UserEntity {
@@ -12,36 +12,30 @@ export interface UserEntity {
     status: string;
 }
 
-export const userAdapter = new EntityAdapter<UserEntity>("items", input => input.userId);
+export const userAdapter = new EntityAdapter<UserEntity>("items", { getId: (input) => input.userId });
 
-export const ConfigureWebApiRepository = () => {
-    WebApiEffectRegister.register(userAdapter);
-    WebApiEffectRegister.configure({
-        urlBase: `http://localhost:3000`,
-        tranformResponse: (data: any[], action: EntityAdapter<any>) => {
-            var newData = data.map(d => ({
-                ...d,
-                userId: d.id
-            }));
+export const provideRepositoryWebApiConfig = provideRepositoryWebApi({
+    adapters: [userAdapter],
+    urlBase: `http://localhost:3000`,
+    tranformResponse: (data: any[], action: EntityAdapter<any>) => {
+        var newData = data.map(d => ({
+            ...d,
+            userId: d.id
+        }));
 
-            newData.forEach(v => delete v["id"]);
+        newData.forEach(v => delete v["id"]);
 
-            console.log(newData);
-            return newData;
-        },
-        tranformBeforeSendingData: (data: any, action: EntityAdapter<any>) => {
-            let newData = { ...data, id: data.userId };
-            delete newData["userId"]
+        console.log(newData);
+        return newData;
+    },
+    tranformBeforeSendingData: (data: any, action: EntityAdapter<any>) => {
+        let newData = { ...data, id: data.userId };
+        delete newData["userId"]
 
-            console.log(newData);
-            return newData;
-        }
-    });
-}
-
-export const getWebApiEffects = () => {
-    return WebApiEffect;
-}
+        console.log(newData);
+        return newData;
+    }
+});
 
 @Component({
     selector: 'app-repository',

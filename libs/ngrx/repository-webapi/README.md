@@ -19,23 +19,20 @@ Follow the same configuration steps as `@ea-controls/ngrx-repository`. Afterward
 Register in app.config.ts (standalone components) the following code
 
 ```typescript
-import { WebApiEffect, WebApiEffectRegister } from "@ea-controls/ngrx-repository-webapi";
-import { provideEffects } from '@ngrx/effects';
+
 import { EntityAdapter } from "@ea-controls/ngrx-repository";
+import { provideRepositoryWebApi } from "@ea-controls/ngrx-repository-webapi";
 
 export const userAdapter = new EntityAdapter<UserEntity>("items");
-
-WebApiEffectRegister.register(userAdapter);
-// Register other adapters as needed
-
-WebApiEffectRegister.configure({
-  urlBase: `http://localhost:3000`
-});
 
 export const appConfig: ApplicationConfig = {
   providers: [
     ...
-    provideEffects(WebApiEffect)
+    provideRepositoryWebApi({
+      adapters: [userAdapter], // <-- Add your adapters
+      urlBase: `http://localhost:3000` // <-- Api url base
+      ... // <-- Other options
+    })
   ],
 };
 ```
@@ -58,7 +55,7 @@ export class RepositoryComponentWrap implements OnInit {
 }
 ```
 
-## WebApiEffectRegister Options
+## provideRepositoryWebApi Options
 
 Configure `@ea-controls/ngrx-repository-webapi` for flexible data transformation and URL formats.
 

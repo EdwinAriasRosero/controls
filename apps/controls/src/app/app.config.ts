@@ -3,24 +3,24 @@ import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { provideState, provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
-import { provideEffects } from '@ngrx/effects';
 import { provideHttpClient } from '@angular/common/http';
-import { ConfigureWebApiRepository, getWebApiEffects, userAdapter } from './repository/repository-webapi.component';
-import { ConfigurePouchDbRepository, getPouchDbEffects, roleAdapterPouchDb, userAdapterPouchDb } from './repository/repository-pouchdb.component';
-
-ConfigureWebApiRepository();
-ConfigurePouchDbRepository();
+import { provideRepositoryWebApiConfig, userAdapter } from './repository/repository-webapi.component';
+import { provideRepositoryPouchDbConfig, userAdapterPouchDb } from './repository/repository-pouchdb.component';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes),
     provideHttpClient(),
+
     provideStore(),
+
     provideState(userAdapter.reducer()),
-    provideState(roleAdapterPouchDb.reducer()),
     provideState(userAdapterPouchDb.reducer()),
-    provideEffects(getWebApiEffects(), getPouchDbEffects()),
+
+    provideRepositoryWebApiConfig,
+    provideRepositoryPouchDbConfig,
+
     provideStoreDevtools({
       maxAge: 25, // Retains last 25 states
       logOnly: !isDevMode(), // Restrict extension to log-only mode

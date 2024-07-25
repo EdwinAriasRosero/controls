@@ -1,13 +1,13 @@
 {
   "name": "@ea-controls/ngrx-repository-pouchdb",
-  "version": "18.0.4",
+  "version": "18.0.5",
   "peerDependencies": {
     "@angular/common": "^18.0.0",
     "@angular/core": "^18.0.0",
     "pouchdb": "^9.0.0",
     "@types/pouchdb": "^6.4.2",
     "@ngrx/effects": "^18.0.1",
-    "@ea-controls/ngrx-repository": "^18.0.8"
+    "@ea-controls/ngrx-repository": "^18.0.9"
   },
   "keywords": [
     "angular",

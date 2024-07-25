@@ -2,7 +2,7 @@ import { JsonPipe } from "@angular/common";
 import { Component, OnInit, signal } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { EntityAdapter } from "@ea-controls/ngrx-repository";
-import { PouchDbEffect, PouchDbEffectRegister } from "@ea-controls/ngrx-repository-pouchdb";
+import { provideRepositoryPouchDb } from "@ea-controls/ngrx-repository-pouchdb";
 
 export interface UserEntity {
     userId: string;
@@ -11,31 +11,15 @@ export interface UserEntity {
     status: string;
 }
 
+export const userAdapterPouchDb = new EntityAdapter<UserEntity>("itemsP", { getId: input => input.userId });
 
-export interface RoleEntity {
-    userId: string;
-    name: string;
-    description: string;
-    status: string;
-}
+export const provideRepositoryPouchDbConfig = provideRepositoryPouchDb({
+    adapters: [userAdapterPouchDb],
+    idField: 'userId'
 
-export const userAdapterPouchDb = new EntityAdapter<UserEntity>("items", input => input.userId);
-export const roleAdapterPouchDb = new EntityAdapter<UserEntity>("roles", input => input.userId);
-
-export const ConfigurePouchDbRepository = () => {
-    PouchDbEffectRegister.register(userAdapterPouchDb);
-    PouchDbEffectRegister.register(roleAdapterPouchDb);
-    PouchDbEffectRegister.configure({
-        idField: 'userId'
-    });
-}
-
-export const getPouchDbEffects = () => {
-    return PouchDbEffect;
-}
+});
 
 const userAdapter = userAdapterPouchDb;
-
 @Component({
     selector: 'app-repository-pouchdb',
     template: `
@@ -67,7 +51,6 @@ export class RepositoryPouchDbComponent implements OnInit {
 
     ngOnInit(): void {
         this.store.dispatch(userAdapter.getAll());
-        this.store.dispatch(roleAdapterPouchDb.getAll());
 
         //You can use async pipe in html to avoid this
         this.store.select(userAdapter.feature).subscribe(data => this.data.set(data))

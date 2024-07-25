@@ -29,15 +29,15 @@ export interface UserEntity {
 }
 ```
 
-Create an entity adapter for your model:
+Create an entity adapter for your model `user.adapter.ts`:
 
 ```typescript
 import { EntityAdapter } from '@ea-controls/ngrx-repository';
 
-export const userAdapter = new EntityAdapter<UserEntity>("users");
+export const userAdapter = new EntityAdapter<UserEntity>("users", {...options});
 ```
 
-Register your adapters in the module:
+Register your adapters in the module `app.config.ts for standalone component`:
 
 ```typescript
 import { provideStore, provideState } from '@ngrx/store';
@@ -45,19 +45,62 @@ import { provideStore, provideState } from '@ngrx/store';
 export const appConfig: ApplicationConfig = {
   providers: [
     ...
-    provideStore(),
-    provideState(userAdapter.reducer(
-        //add more reducer actions
-        //on(....)
-    )),
-    provideState(userAdapter.reducer()) // <-- If there are not reducer actions you can take this approach
+    provideStore(), // <-- provideStore
+    provideState(userAdapter.reducer()) // <-- Add userAdapter reducer
   ],
 };
 ```
 
+### Add reducers and actions (Optional)
+
+You can create your own actions and associations between actions and state changes (Reducers) `user.adapter.ts`
+
+```ts
+import { createAction, on } from "@ngrx/store";
+
+//new action
+export const removeFirstUser = createAction(`[users] custom action update by name`);
+
+//In userAdapter you can send your associations between actions and state changes
+export const userAdapter = new EntityAdapter<UserEntity>("users", {
+    ons: [
+        on(removeFirstUser, (state) => state.slice(1)),
+    ]
+});
+```
+
+### Add custom selectors
+
+EntityAdapter exposes feature for extending selectors `user.adapter.ts`
+
+```ts
+import { createSelector } from "@ngrx/store";
+
+export const userAdapter = new EntityAdapter<UserEntity>("users");
+
+export const getById = (id: string) => 
+    createSelector(userAdapter.feature, users => items.find(i => userAdapter.getId(i) === id));
+```
+
+Now you can use it in your components
+
+```typescript
+import { signal } from '@angular/core';
+import { JsonPipe } from "@angular/common";
+import { provideStore, provideState } from '@ngrx/store';
+import { Store } from "@ngrx/store";
+
+@Component({...})
+export class App {
+    constructor(private store: Store) { 
+        this.store.select(getById).subscribe(user => console.log('User filtered by ID', user)); // <-- Using getById Selector
+    }
+}
+```
+
 ## Usage
 
-Use ngrx patterns. Inject the store and call actions using the adapter:
+Use ngrx pattern. Inject the store and dispatch actions using the adapter:
 
 ```typescript
 import { signal } from '@angular/core';
@@ -91,7 +134,7 @@ export class App {
 
     static id: number = 0;
     data = signal<UserEntity[]>([]);
-    selected = signal<UserEntity | undefined>(undefined);
+    selected = signal<UserEntity | undefined>();
 
     ngOnInit(): void {
         this.store.select(userAdapter.feature).subscribe(data => this.data.set(data));
@@ -128,7 +171,7 @@ export class App {
 | feature()        | Default selector, returns entire collection | -                                    |
 | selectById(id)   | Selects an item from collection by ID       | string                               |
 
-## OnSuccess/onFail
+## onSuccess/onFail
 
 Some actions receive extra callback information that allows you to run a statement upon success or failure.
 
@@ -150,7 +193,7 @@ You can customize the ID calculation when creating the `EntityAdapter`. Use the 
 ```typescript
 import { EntityAdapter } from '@ea-controls/ngrx-repository';
 
-export const userAdapter = new EntityAdapter<UserEntity>("users", (item) => `${item.id}.${item.name}`);
+export const userAdapter = new EntityAdapter<UserEntity>("users", { getId: (input) => input.userId });
 ```
 
 >Note: The default ID calculation uses `item.id`.

@@ -1,1 +1,2 @@
-export * from './lib/ngrx-repository-pouchdb/entity-pouchdb-effects';
+export * from './lib/ngrx-repository-pouchdb/entity-pouchdb-options';
+export * from './lib/ngrx-repository-pouchdb/entity-pouchdb-provider';

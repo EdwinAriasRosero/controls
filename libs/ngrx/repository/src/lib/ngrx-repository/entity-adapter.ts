@@ -3,11 +3,17 @@ import {
     createReducer, createSelector, MemoizedSelector, on, props, ReducerTypes
 } from "@ngrx/store";
 
+export class EntityAdapterOptions<T> {
+    getId?: (input: T) => string = (input: T) => (<any>input).id;
+    ons?: ReducerTypes<T[], readonly ActionCreator[]>[] = [];
+}
+
 export class EntityAdapter<T> {
 
     public feature: MemoizedSelector<object, T[]>;
     public initialState: T[] = [];
     public launchBeforeActions: boolean = false;
+    public options: EntityAdapterOptions<T> = new EntityAdapterOptions<T>();
 
     public actions = {
         getAll: createAction(`[${this.name}] repository get all`),
@@ -30,12 +36,20 @@ export class EntityAdapter<T> {
     };
 
     constructor(public name: string,
-        public getId: (input: T) => string = (input: T) => (<any>input).id) {
+        options?: EntityAdapterOptions<T>) {
+
+        if (options) {
+            this.options = { ...this.options, ...options };
+        }
 
         this.feature = createFeatureSelector<T[]>(this.name);
     }
 
-    public reducer(...ons: ReducerTypes<T[], readonly ActionCreator[]>[]) {
+    public getId(input: T): string {
+        return this.options.getId!(input);
+    }
+
+    public reducer() {
         const reducer = createReducer(
             this.initialState,
             on(this.actions.setAll, (state, { data }) => data),
@@ -43,7 +57,7 @@ export class EntityAdapter<T> {
             on(this.actions.removeOne, (state, { data }) => state.filter(d => this.getId(d).toString() !== this.getId(data).toString())),
             on(this.actions.patchOne, (state, { data }) => state.map(d => this.getId(d).toString() === this.getId(data).toString() ? data : d)),
             on(this.actions.removeById, (state, { id }) => state.filter(d => this.getId(d).toString() !== id.toString())),
-            ...ons
+            ...this.options.ons!
         );
 
         return { name: this.name, reducer: reducer };

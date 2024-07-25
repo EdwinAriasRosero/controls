@@ -21,23 +21,19 @@ Follow the same configuration steps as `@ea-controls/ngrx-repository`. Afterward
 Register in app.config.ts (standalone components) the following code
 
 ```typescript
-import { PouchDbEffect, PouchDbEffectRegister } from "@ea-controls/ngrx-repository-pouchdb";
-import { provideEffects } from '@ngrx/effects';
 import { EntityAdapter } from "@ea-controls/ngrx-repository";
+import { provideRepositoryPouchDb } from "@ea-controls/ngrx-repository-pouchdb";
 
 export const userAdapter = new EntityAdapter<UserEntity>("items");
-
-PouchDbEffectRegister.register(userAdapter);
-// Register other adapters as needed
-
-PouchDbEffectRegister.configure({
-    idField: 'userId'
-});
 
 export const appConfig: ApplicationConfig = {
   providers: [
     ...
-    provideEffects(PouchDbEffect)
+    provideRepositoryPouchDb({
+      adapters: [userAdapter], // <-- Add your adapters
+      idField: 'userId' // <-- Default id field
+      ... // <-- Other options
+    })
   ],
 };
 ```
@@ -60,10 +56,11 @@ export class RepositoryComponentWrap implements OnInit {
 }
 ```
 
-## PouchDbEffectRegister Options
+## provideRepositoryPouchDb Options
 
 Configure `@ea-controls/ngrx-repository-pouchdb` for flexible data transformation and URL formats.
 
 | Option                  | Description                                          | Input                                   | Output                         |
 |-------------------------|------------------------------------------------------|-----------------------------------------|--------------------------------|
 | idField                 | Entity Id field           | sring   | - |
+| getDb                 | Callback for building PouchDb instance           | EntityAdapter   | Returns new instance of PouchDb, if you extend this consider caching your db instances |
