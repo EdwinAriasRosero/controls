@@ -1,4 +1,4 @@
-import { ApplicationRef, ComponentFactoryResolver, ComponentRef, EnvironmentProviders, importProvidersFrom, inject, Injectable, InjectionToken, Injector, makeEnvironmentProviders, OnDestroy, signal, TemplateRef } from "@angular/core";
+import { ApplicationRef, ComponentFactoryResolver, ComponentRef, EnvironmentProviders, inject, Injectable, InjectionToken, Injector, makeEnvironmentProviders, OnDestroy, signal, TemplateRef } from "@angular/core";
 import { SpinnerComponent, SpinnerInto } from "./spinner.component";
 
 export const REPOSITORY_SPINNER_OPTIONS = new InjectionToken<SpinnerServiceOptions>('REPOSITORY_SPINNER_OPTIONS');
