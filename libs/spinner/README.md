@@ -12,27 +12,30 @@ Check out the demo on StackBlitz: [Demo](https://stackblitz.com/edit/stackblitz-
 npm i @ea-controls/spinner
 ```
 
-# Instructions
-
-## Modules
-
-Import `SpinnerComponent` from `@ea-controls/spinner` in your TypeScript file:
+# Configuration
 
 ```ts
-import { SpinnerComponent } from '@ea-controls/spinner';
+// app.config.ts
+
+import { provideEaSpinner } from '@ea-controls/spinner';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    ...
+    provideEaSpinner({ // <-- provide spinner
+        color?: string // <-- default color is white
+    })
+  ],
+};
 ```
 
-## Usage
-
-Add the `<ea-spinner>` tag in your `app.component.html`. You can optionally specify a color attribute.
-
-```html
-<ea-spinner color="red"></ea-spinner>
-```
+# Usage
 
 In your component, inject `SpinnerService` and use its methods `show(message?)` or `hide()` to control the spinner:
 
 ```ts
+// app.component.ts
+
 import { SpinnerService } from '@ea-controls/spinner';
 import { timer } from 'rxjs';
 
@@ -53,14 +56,16 @@ constructor(private spinnerService: SpinnerService) {
 }
 ```
 
-> Note: `color` and `message` inputs in `<ea-spinner>` are optional.
+## Customization
 
-You can also customize the content inside `<ea-spinner>` if needed:
+You can change spinner animation, follow below instructions, use structural directive `*ea-spinner-template`
 
 ```html
-<ea-spinner>
-    <img src="img.gif">
-</ea-spinner>
+<!-- app.component.html -->
+
+<div *ea-spinner-template>
+    <img src="https://cdn.pixabay.com/animation/2022/09/16/21/13/21-13-08-279_512.gif" />
+</div>
 ```
 
 ## Result

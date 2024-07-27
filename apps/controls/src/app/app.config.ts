@@ -6,6 +6,7 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRepositoryWebApiConfig, userAdapter } from './repository/repository-webapi.component';
 import { provideRepositoryPouchDbConfig, userAdapterPouchDb } from './repository/repository-pouchdb.component';
+import { provideEaSpinner } from '@ea-controls/spinner';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,6 +21,8 @@ export const appConfig: ApplicationConfig = {
 
     provideRepositoryWebApiConfig,
     provideRepositoryPouchDbConfig,
+
+    provideEaSpinner(),
 
     provideStoreDevtools({
       maxAge: 25, // Retains last 25 states
