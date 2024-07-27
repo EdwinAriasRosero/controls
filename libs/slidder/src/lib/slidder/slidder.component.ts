@@ -7,7 +7,6 @@ import { interval, Subscription } from 'rxjs';
   standalone: true
 })
 export class SlidderItemDirective<T> {
-
   constructor(public templateRef: TemplateRef<T>) { }
 }
 
@@ -50,12 +49,11 @@ export class SlidderComponent implements OnDestroy {
   }
 
   previous(): void {
-    this.currentVisible.update(current => current > 0 ? current - 1 : current);
+    this.currentVisible.update(current => current > 0 ? current - 1 : this.items().length - 1);
   }
 
   exact(value: number) {
     this.currentVisible.set(value);
   }
-
 
 }
