@@ -15,6 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@controls/mat-table-extensions": [
+        "libs/mat-table-extensions/src/index.ts"
+      ],
       "@ea-controls/layout": ["libs/layout/src/index.ts"],
       "@ea-controls/ngrx-repository": ["libs/ngrx/repository/src/index.ts"],
       "@ea-controls/ngrx-repository-pouchdb": [
@@ -25,7 +28,8 @@
       ],
       "@ea-controls/portal": ["libs/portal/src/index.ts"],
       "@ea-controls/slidder": ["libs/slidder/src/index.ts"],
-      "@ea-controls/spinner": ["libs/spinner/src/index.ts"]
+      "@ea-controls/spinner": ["libs/spinner/src/index.ts"],
+      "@ea-controls/mat-table-extensions": ["libs/mat-table-extensions/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
